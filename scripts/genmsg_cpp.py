@@ -276,6 +276,7 @@ def generator(spec, file_name, md5sum):
 
     yield '#include <string>'
     yield '#include <vector>'
+    yield '#include <map>'
     yield ''
     yield '#include <ros/types.h>'
     yield '#include <ros/serialization.h>'
@@ -348,7 +349,7 @@ def generator(spec, file_name, md5sum):
 
     # End of struct
     yield ''
-    yield '} // struct %s'%(cpp_class)
+    yield '}; // struct %s'%(cpp_class)
 
     # Typedef of template instance using std::allocator
     yield ''
@@ -356,8 +357,8 @@ def generator(spec, file_name, md5sum):
 
     # Shared pointer typedefs
     yield ''
-    yield 'typedef boost::shared_ptr< %s> MarkerPtr;'%(cpp_full_name)
-    yield 'typedef boost::shared_ptr< %s const> MarkerConstPtr;'%(cpp_full_name)
+    yield 'typedef boost::shared_ptr< %s%s> %sPtr;'%(cpp_namespace,spec.short_name,spec.short_name)
+    yield 'typedef boost::shared_ptr< %s%s const> %sConstPtr;'%(cpp_namespace,spec.short_name,spec.short_name)
 
     # Printer
     yield ''
@@ -388,8 +389,8 @@ def generator(spec, file_name, md5sum):
     # Binary traits
     for trait in traits:
         yield ''
-        yield 'template<class ContainerAllocator> struct %s<%s > : public TrueType {};'%(trait, cpp_full_name_with_alloc)
-        yield 'template<class ContainerAllocator> struct %s<%s const> : public TrueType {};'%(trait, cpp_full_name_with_alloc)
+        yield 'template<class ContainerAllocator> struct %s< %s > : public TrueType {};'%(trait, cpp_full_name_with_alloc)
+        yield 'template<class ContainerAllocator> struct %s< %s const> : public TrueType {};'%(trait, cpp_full_name_with_alloc)
 
     # String traits
     for trait_class,trait_value in [['MD5Sum', md5sum], ['DataType', spec.full_name], ['Definition', 'todo']]: #TODO Definition
@@ -457,7 +458,7 @@ def generator(spec, file_name, md5sum):
     # Printer operation
 
     yield 'template<class ContainerAllocator>'
-    yield 'struct Printer<%s>'%(cpp_full_name_with_alloc)
+    yield 'struct Printer< %s >'%(cpp_full_name_with_alloc)
     yield '{'
     yield '  template<typename Stream> static void stream(Stream& s, const std::string& indent, const %s& v)'%(cpp_full_name_with_alloc)
     yield '  {'
