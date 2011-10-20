@@ -41,21 +41,29 @@ from __future__ import print_function
 import os
 import sys
 
+import genmsg
 from genmsg import log, plog
 import genmsg.msgs 
 import genmsg.gentools
+import genmsg.command_line
+import genmsg.base
 
 try:
     from cStringIO import StringIO # Python 2.x
 except ImportError:
     from io import StringIO # Python 3.x
 
-MSG_TYPE_TO_CPP = {'byte': 'int8_t', 'char': 'uint8_t',
+MSG_TYPE_TO_CPP = {'byte': 'int8_t',
+                   'char': 'uint8_t',
                    'bool': 'uint8_t',
-                   'uint8': 'uint8_t', 'int8': 'int8_t', 
-                   'uint16': 'uint16_t', 'int16': 'int16_t', 
-                   'uint32': 'uint32_t', 'int32': 'int32_t',
-                   'uint64': 'uint64_t', 'int64': 'int64_t',
+                   'uint8': 'uint8_t',
+                   'int8': 'int8_t', 
+                   'uint16': 'uint16_t',
+                   'int16': 'int16_t', 
+                   'uint32': 'uint32_t',
+                   'int32': 'int32_t',
+                   'uint64': 'uint64_t',
+                    'int64': 'int64_t',
                    'float32': 'float',
                    'float64': 'double',
                    'string': 'std::basic_string<char, std::char_traits<char>, typename ContainerAllocator::template rebind<char>::other > ',
@@ -216,36 +224,6 @@ def write_struct(s, spec, cpp_name_prefix, includepath,
     s.write('typedef %s_<std::allocator<void> > %s;\n\n'%(cpp_msg_base, msg))
     s.write('typedef boost::shared_ptr<%s> %sPtr;\n'%(cpp_msg_base, msg))
     s.write('typedef boost::shared_ptr<%s const> %sConstPtr;\n\n'%(cpp_msg_base, msg))
-
-def default_value(type):
-    """
-    Returns the value to initialize a message member with.  0 for integer types, 0.0 for floating point, false for bool,
-    empty string for everything else
-    
-    @param type: The type
-    @type type: str
-    """
-    if type in ['byte', 'int8', 'int16', 'int32', 'int64',
-                'char', 'uint8', 'uint16', 'uint32', 'uint64']:
-        return '0'
-    elif type in ['float32', 'float64']:
-        return '0.0'
-    elif type == 'bool':
-        return 'false'
-        
-    return ""
-
-def takes_allocator(type):
-    """
-    Returns whether or not a type can take an allocator in its constructor.  False for all builtin types except string.
-    True for all others.
-    
-    @param type: The type
-    @type: str
-    """
-    return not type in ['byte', 'int8', 'int16', 'int32', 'int64',
-                        'char', 'uint8', 'uint16', 'uint32', 'uint64',
-                        'float32', 'float64', 'bool', 'time', 'duration']
 
 def write_initializer_list(s, spec, container_gets_allocator):
     """
@@ -690,6 +668,194 @@ def write_ostream_operator(s, spec, cpp_name_prefix):
     s.write('template<typename ContainerAllocator>\nstd::ostream& operator<<(std::ostream& s, const %s& v)\n{\n'%(cpp_msg_with_alloc))
     s.write('  ros::message_operations::Printer<%s>::stream(s, "", v);\n  return s;}\n\n'%(cpp_msg_with_alloc))
 
+#tmp used
+def default_value(type):
+    """
+    Returns the value to initialize a message member with.  0 for integer types, 0.0 for floating point, false for bool,
+    empty string for everything else
+    
+    @param type: The type
+    @type type: str
+    """
+    if type in ['byte', 'int8', 'int16', 'int32', 'int64',
+                'char', 'uint8', 'uint16', 'uint32', 'uint64']:
+        return '0'
+    elif type in ['float32', 'float64']:
+        return '0.0'
+    elif type == 'bool':
+        return 'false'
+
+    return ""
+
+def takes_allocator(type):
+    """
+    Returns whether or not a type can take an allocator in its constructor.  False for all builtin types except string.
+    True for all others.
+    
+    @param type: The type
+    @type: str
+    """
+    return not type in ['byte', 'int8', 'int16', 'int32', 'int64',
+                        'char', 'uint8', 'uint16', 'uint32', 'uint64',
+                        'float32', 'float64', 'bool', 'time', 'duration']
+
+
+#used, should be updated =+ doc
+
+def generate_fixed_length_assigns(spec, container_gets_allocator, cpp_name_prefix):
+    """
+    Initialize any fixed-length arrays
+    
+    @param s: The stream to write to
+    @type s: stream
+    @param spec: The message spec
+    @type spec: genmsg.msgs.MsgSpec
+    @param container_gets_allocator: Whether or not a container type (whether it's another message, a vector, array or string)
+        should have the allocator passed to its constructor.  Assumes the allocator is named _alloc.
+    @type container_gets_allocator: bool
+    @param cpp_name_prefix: The C++ prefix to use when referring to the message, e.g. "std_msgs::"
+    @type cpp_name_prefix: str
+    """
+    # Assign all fixed-length arrays their default values
+    for field in spec.parsed_fields():
+        if (not field.is_array or field.array_len is None):
+            continue
+
+        val = default_value(field.base_type)
+        if (container_gets_allocator and takes_allocator(field.base_type)):
+            # String is a special case, as it is the only builtin type that takes an allocator
+            if (field.base_type == "string"):
+                string_cpp = msg_type_to_cpp("string")
+                yield '    %s.assign(%s(_alloc));\n'%(field.name, string_cpp)
+            else:
+                (cpp_msg_unqualified, cpp_msg_with_alloc, _) = cpp_message_declarations(cpp_name_prefix, field.base_type)
+                yield '    %s.assign(%s(_alloc));\n'%(field.name, cpp_msg_with_alloc)
+        elif (len(val) > 0):
+            yield '    %s.assign(%s);\n'%(field.name, val)
+
+
+def generate_initializer_list(spec, container_gets_allocator):
+    """
+    Writes the initializer list for a constructor
+    
+    @param s: The stream to write to
+    @type s: stream
+    @param spec: The message spec
+    @type spec: genmsg.msgs.MsgSpec
+    @param container_gets_allocator: Whether or not a container type (whether it's another message, a vector, array or string)
+        should have the allocator passed to its constructor.  Assumes the allocator is named _alloc.
+    @type container_gets_allocator: bool
+    """
+
+    op = ':'
+    for field in spec.parsed_fields():
+        val = default_value(field.base_type)
+        use_alloc = takes_allocator(field.base_type)
+        if (field.is_array):
+            if (field.array_len is None and container_gets_allocator):
+                yield '  %s %s(_alloc)'%(op, field.name)
+            else:
+                yield '  %s %s()'%(op, field.name)
+        else:
+            if (container_gets_allocator and use_alloc):
+                yield '  %s %s(_alloc)'%(op, field.name)
+            else:
+                yield '  %s %s(%s)'%(op, field.name, val)
+        op = ','
+
+
+def generator(spec, file_name, md5sum):
+    yield '/* Auto-generated by genmsg_cpp for file %s */'%(file_name)
+    yield '#ifndef %s_MESSAGE_%s_H'%(spec.package.upper(), spec.short_name.upper())
+    yield '#define %s_MESSAGE_%s_H'%(spec.package.upper(), spec.short_name.upper())
+
+    yield '#include <string>'
+    yield '#include <vector>'
+    yield ''
+    yield '#include <ros/types.h>'
+    yield '#include <ros/serialization.h>'
+    yield '#include <ros/builtin_message_traits.h>'
+    yield '#include <ros/message_operations.h>'
+    yield ''
+    
+    # Includes for dependencies
+    for field in spec.parsed_fields():
+        if (not field.is_builtin):
+            if (field.is_header):
+                yield '#include <std_msgs/Header.h>'
+            else:
+                (package, name) = genmsg.names.package_resource_name(field.base_type)
+                package = package or spec.package # convert '' to package
+                yield '#include <%s/%s.h>'%(package, name)
+
+    yield ''
+    yield 'namespace %s'%(spec.package)
+    yield '{'
+
+    yield 'template <class ContainerAllocator>'
+    yield 'struct %s_ {\n'%(spec.short_name)
+    yield '  typedef %s_<ContainerAllocator> Type;'%(spec.short_name)
+
+    for (alloc_type,alloc_name) in [['',''],['const ContainerAllocator& ','_alloc']]:
+        log('test')
+        yield '  %s_(%s%s)'%(spec.short_name, alloc_type, alloc_name)
+
+        # Write initializer list
+        for l in generate_initializer_list(spec, alloc_name != '' ) :
+            yield l
+        
+        yield '  {'
+
+        # Fixed length arrays
+        for l in generate_fixed_length_assigns(spec, alloc_name != '', '%s::'%(spec.package)):
+            yield l
+
+        yield '  }'
+        yield ''
+
+    for field in spec.parsed_fields():
+        cpp_type = msg_type_to_cpp(field.type)
+        yield '  typedef %s _%s_type;'%(cpp_type, field.name)
+        yield '  %s %s;'%(cpp_type, field.name)
+        yield ''
+
+    for constant in spec.constants:
+        if (constant.type in ['byte', 'int8', 'int16', 'int32', 'int64', 'char', 'uint8', 'uint16', 'uint32', 'uint64']):
+            yield '  enum { %s = %s };' % (constant.name, constant.val)
+        else:
+            yield '  static const %s %s;' % (msg_type_to_cpp(constant.type), constant.name)
+
+
+
+    yield '} // namespace %s'%(spec.package)
+    #write_members(s, spec)
+    #write_constant_declarations(s, spec)
+
+    #TODOXXX: convert to loader
+    #gendeps_dict = genmsg.gentools.get_dependencies(spec, spec.package,
+    #                                                includepath)
+#    md5sum = genmsg.gentools.compute_md5(gendeps_dict, includepath)
+#    full_text = compute_full_text_escaped(gendeps_dict)
+
+#    write_deprecated_member_functions(s, spec, dict({'MD5Sum': md5sum, 'DataType': '%s/%s'%(spec.package, spec.short_name), 'MessageDefinition': full_text}.items() + extra_deprecated_traits.items()))
+
+#    (cpp_msg_unqualified, cpp_msg_with_alloc, cpp_msg_base) = cpp_message_declarations(cpp_name_prefix, msg)
+#    s.write('  typedef boost::shared_ptr<%s> Ptr;\n'%(cpp_msg_with_alloc))
+#    s.write('  typedef boost::shared_ptr<%s const> ConstPtr;\n'%(cpp_msg_with_alloc))
+#    s.write('  boost::shared_ptr<std::map<std::string, std::string> > __connection_header;\n')
+
+#    s.write('}; // struct %s\n'%(msg))
+
+#    s.write('typedef %s_<std::allocator<void> > %s;\n\n'%(cpp_msg_base, msg))
+#    s.write('typedef boost::shared_ptr<%s> %sPtr;\n'%(cpp_msg_base, msg))
+#    s.write('typedef boost::shared_ptr<%s const> %sConstPtr;\n\n'%(cpp_msg_base, msg))
+
+
+#    write_struct(s, spec, cpp_prefix, options.includepath)
+#    write_constant_definitions(s, spec)
+#    write_ostream_operator(s, spec, cpp_prefix)
+
+
 def generate(args):
     """
     Generate a message
@@ -706,20 +872,54 @@ def generate(args):
                       help="package name")
     parser.add_option('-o', dest='outdir',
                       help="absolute path to output directory")
-    parser.add_option('-I', dest='includepath',
+    parser.add_option('-I', dest='includepath', default=[],
                       help="include path to search for messages",
                       action='append')
+    parser.add_option('-d', dest='deps', default=False,
+                      help="list dependencies",
+                      action="store_true")
     (options, args) = parser.parse_args(args)
 
-    if not isinstance(options.includepath, list):
-        options.includepath = []
-    # print "input==", options.input, "outdir==", options.outdir
+    # Read and parse the source msg file
+    infile = os.path.abspath(args[1])
+    msg_context = genmsg.msg_loader.MsgContext.create_default() # not used?
+    full_type_name = genmsg.gentools.compute_full_type_name(options.package, os.path.basename(infile))
+    spec = genmsg.msg_loader.load_msg_from_file(msg_context, infile, full_type_name)
 
-    msg_context = MsgContext.create_default()
-    full_name = "TODO"
-    (_, spec) = genmsg.msg_loader.load_msg_from_file(msg_context, args[1], full_name, options.package)
-    plog("spec", spec)
-    
+    # Locate and parse dependencies
+    search_path = genmsg.command_line.includepath_to_dict(options.includepath)
+    try:
+        genmsg.msg_loader.load_depends(msg_context, spec, search_path)
+    except genmsg.InvalidMsgSpec as e:
+        raise genmsg.MsgGenerationException("Cannot read .msg for %s: %s"%(full_type_name, str(e)))
+
+    # Check if we should print the depencies
+    if options.deps:
+        for dep_type_name in msg_context.get_depends(full_type_name):
+            dep_file = msg_context.get_file(dep_type_name)
+            print ("%s (%s)"%(dep_file,dep_type_name))
+        return
+
+    # Create output directory
+    try:
+        os.makedirs(options.outdir)
+    except OSError as e:
+        if e.errno != 17: # file exists
+            raise
+
+    # Compute md5 sum of message
+    md5sum = genmsg.compute_md5(msg_context, spec)
+
+    # Write output file
+    out_file_name = "%s.h"%spec.short_name
+    out_file = os.path.join(options.outdir, out_file_name)
+    with open(out_file, 'w') as f:
+        for l in generator(spec, out_file_name, md5sum):
+          f.write(l+'\n')
+    return out_file
+
+
+"""    
     s = StringIO()
     write_begin(s, spec, args[1])
     write_generic_includes(s)
@@ -743,7 +943,6 @@ def generate(args):
         s.write("#include <std_msgs/header_deprecated_def.h>\n")
         s.write("#undef STD_MSGS_INCLUDING_HEADER_DEPRECATED_DEF\n\n") 
 
-
     write_end(s, spec)
     
     if 'ROS_BUILD' in os.environ:
@@ -765,6 +964,7 @@ def generate(args):
         print(f, s.getvalue(), file=f)
     
     s.close()
+"""
 
 if __name__ == "__main__":
     generate(sys.argv)
