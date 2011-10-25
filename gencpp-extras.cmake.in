@@ -1,5 +1,3 @@
-# How To Find These???
-
 find_program( GENCPP_BIN genmsg_cpp.py )
 
 message(STATUS "GENCPP_BIN found at ${GENCPP_BIN}")
@@ -32,27 +30,33 @@ macro(generate_msg_cpp PKG)
     set(IFLAGS "")
     set(DEP_TARGETS "")
 
-#     foreach(dep ${PKG_DEPENDENCIES})
-#       set(IFLAGS -I${dep}:${TOP}/${dep}/msg ${IFLAGS})
+    foreach(dep ${PKG_DEPENDENCIES})
+      if(${dep}_FOUND)
+	foreach(i ${${dep}_MSG_INCLUDE_DIRS})
+	  set(IFLAGS -I${dep}:${i} ${IFLAGS})
+	endforeach()
+      else()
+	message(WARNING "Please add find_package() for ${dep}")
+      endif()
+    endforeach()
 
-#     endforeach()
+    message(STATUS "I flags ${IFLAGS}")
 
-
-#     set(THESEDEPS "")
-#     execute_process(COMMAND
-#       ${GENCPP_EXE} ${INPUT_FULLPATH} -d ${IFLAGS}
-#       OUTPUT_VARIABLE THESEDEPS
-#       OUTPUT_STRIP_TRAILING_WHITESPACE
-#       )
-#     separate_arguments(THESEDEPS UNIX_COMMAND ${THESEDEPS})
-#     show(THESEDEPS)
+    set(THESEDEPS "")
+    execute_process(COMMAND
+      ${GENCPP_BIN} ${MSG_INPUT_FILE} -d ${IFLAGS}
+      OUTPUT_VARIABLE MSG_DEPS
+      OUTPUT_STRIP_TRAILING_WHITESPACE
+      )
+    separate_arguments(MSG_DEPS UNIX_COMMAND ${MSG_DEPS})
+    message(STATUS "MSG_DEPS: ${MSG_DEPS}")
 
     foreach(dep ${PKG_DEPENDENCIES})
       list(APPEND DEP_TARGETS ${dep}_gencpp)
     endforeach()
 
     add_custom_command(OUTPUT ${GEN_OUTPUT_FILE}
-       DEPENDS ${GENCPP_BIN} ${MSG_INPUT_FILE}# ${THESEDEPS}
+       DEPENDS ${GENCPP_BIN} ${MSG_INPUT_FILE} ${MSG_DEPS}
        COMMAND ${GENCPP_BIN} ${MSG_INPUT_FILE}
        -p ${PKG}
        -o ${GEN_OUTPUT_DIR}
@@ -68,9 +72,9 @@ macro(generate_msg_cpp PKG)
     DEPENDS ${ALL_GEN_OUTPUT_FILES}
     )
 
-#  show(DEP_TARGETS)
-#  if(DEP_TARGETS)
-#    add_dependencies(${PKG}_gencpp ${DEP_TARGETS})
-#  endif(DEP_TARGETS)
+  message(STATUS "DEP_TARGETS: ${DEP_TARGETS}")
+  if(DEP_TARGETS)
+    add_dependencies(${PKG}_gencpp ${DEP_TARGETS})
+  endif(DEP_TARGETS)
 
 endmacro()
