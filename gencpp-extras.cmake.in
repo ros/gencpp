@@ -1,4 +1,4 @@
-find_program( GENCPP_BIN genmsg_cpp.py )
+find_program(GENCPP_BIN genmsg_cpp.py)
 
 message(STATUS "GENCPP_BIN found at ${GENCPP_BIN}")
 
@@ -51,6 +51,7 @@ macro(generate_msg_cpp PKG)
     separate_arguments(MSG_DEPS UNIX_COMMAND ${MSG_DEPS})
     message(STATUS "MSG_DEPS: ${MSG_DEPS}")
 
+    #cpp specific
     foreach(dep ${PKG_DEPENDENCIES})
       list(APPEND DEP_TARGETS ${dep}_gencpp)
     endforeach()
@@ -61,14 +62,14 @@ macro(generate_msg_cpp PKG)
        -p ${PKG}
        -o ${GEN_OUTPUT_DIR}
        ${IFLAGS}
-       COMMENT "Generating C++ code from ${PKG}/${SHORTNAME}"
+       COMMENT "Generating C++ code from ${PKG}/${MSG_SHORT_NAME}"
        )
      list(APPEND ALL_GEN_OUTPUT_FILES ${GEN_OUTPUT_FILE})
 
   endforeach() #msg
   message(STATUS "All Outputs: ${ALL_GEN_OUTPUT_FILES}")
 
-  add_custom_target(${PKG}_gencpp
+  add_custom_target(${PKG}_gencpp ALL
     DEPENDS ${ALL_GEN_OUTPUT_FILES}
     )
 
