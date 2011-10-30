@@ -1,0 +1,12 @@
+Source: ros-fuerte-gencpp
+Section: misc
+Priority: extra
+Maintainer: Troy Straszheim <straszheim@willowgarage.com>
+Build-Depends: debhelper (>= 7), cmake, make, rosbuild
+Homepage: <insert the upstream URL, if relevant>
+
+Package: ros-fuerte-gencpp
+Architecture: all
+Depends: ${misc:Depends}
+Description: It generates cpp, it does
+ <insert long description, indented with spaces>
