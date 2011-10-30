@@ -2,80 +2,37 @@ find_program(GENCPP_BIN genmsg_cpp.py)
 
 message(STATUS "GENCPP_BIN found at ${GENCPP_BIN}")
 
-macro(generate_msg_cpp PKG)
-  parse_arguments(PKG "MESSAGES;DEPENDENCIES" "" ${ARGN})
-  
-  message(">> generate_msg_cpp << PKG: ${PKG} MSGS: ${PKG_MESSAGES}  DEPNDS: ${PKG_DEPENDENCIES}")
-  set(ALL_GEN_OUTPUT_FILES "")
-  foreach(msg ${PKG_MESSAGES})
+# Generate .msg->.h for cpp
+# List of all generated .h files should be saved in ALL_GEN_OUTPUT_FILES_cpp
+macro(_generate_msgs_cpp ARG_PKG ARG_IFLAGS ARG_MSG_DEPS ARG_MESSAGES ARG_GEN_OUTPUT_DIR)
+
+  set(ALL_GEN_OUTPUT_FILES_cpp "")
+  foreach(msg ${ARG_MESSAGES})
     
-    # common stuff
+    #Create input and output filenames
     get_filename_component(MSG_SHORT_NAME ${msg} NAME_WE)
     set(MSG_INPUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/${msg})
-    message(STATUS "InputFile=${MSG_INPUT_FILE}")
-
-    # Needed?
-    #configure_file(${TOP}/${PKG}/msg/${MSGPATH}
-    #  ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_FILES_DIRECTORY}/${MSGPATH}.stamp
-    #  )
 
     set(MSG_GENERATED_NAME ${MSG_SHORT_NAME}.h)
-    list(APPEND GENERATED_ALL ${MSG_GENERATED_NAME})
-
-    set(GEN_OUTPUT_DIR ${CMAKE_BINARY_DIR}/gen_msgs/include/${PKG})
-    set(GEN_OUTPUT_FILE ${GEN_OUTPUT_DIR}/${MSG_GENERATED_NAME})
-    message(STATUS "GenOutputFile=${GEN_OUTPUT_FILE}")
-
-    # Common, build deps
-    set(IFLAGS "")
-    set(DEP_TARGETS "")
-
-    foreach(dep ${PKG_DEPENDENCIES})
-      if(${dep}_FOUND)
-	foreach(i ${${dep}_MSG_INCLUDE_DIRS})
-	  set(IFLAGS -I${dep}:${i} ${IFLAGS})
-	endforeach()
-      else()
-	message(WARNING "Please add find_package() for ${dep}")
-      endif()
-    endforeach()
-
-    message(STATUS "I flags ${IFLAGS}")
-
-    set(THESEDEPS "")
-    execute_process(COMMAND
-      ${GENCPP_BIN} ${MSG_INPUT_FILE} -d ${IFLAGS}
-      OUTPUT_VARIABLE MSG_DEPS
-      OUTPUT_STRIP_TRAILING_WHITESPACE
-      )
-    separate_arguments(MSG_DEPS UNIX_COMMAND ${MSG_DEPS})
-    message(STATUS "MSG_DEPS: ${MSG_DEPS}")
-
-    #cpp specific
-    foreach(dep ${PKG_DEPENDENCIES})
-      list(APPEND DEP_TARGETS ${dep}_gencpp)
-    endforeach()
+    set(GEN_OUTPUT_FILE ${ARG_GEN_OUTPUT_DIR}/${MSG_GENERATED_NAME})
 
     add_custom_command(OUTPUT ${GEN_OUTPUT_FILE}
-       DEPENDS ${GENCPP_BIN} ${MSG_INPUT_FILE} ${MSG_DEPS}
-       COMMAND ${GENCPP_BIN} ${MSG_INPUT_FILE}
-       -p ${PKG}
-       -o ${GEN_OUTPUT_DIR}
-       ${IFLAGS}
-       COMMENT "Generating C++ code from ${PKG}/${MSG_SHORT_NAME}"
-       )
-     list(APPEND ALL_GEN_OUTPUT_FILES ${GEN_OUTPUT_FILE})
+      DEPENDS ${GENCPP_BIN} ${MSG_INPUT_FILE} ${ARG_MSG_DEPS}
+      COMMAND ${GENCPP_BIN} ${MSG_INPUT_FILE}
+      -p ${ARG_PKG}
+      -o ${ARG_GEN_OUTPUT_DIR}
+      ${ARG_IFLAGS}
+      COMMENT "Generating C++ code from ${ARG_PKG}/${MSG_SHORT_NAME}"
+      )
 
-  endforeach() #msg
-  message(STATUS "All Outputs: ${ALL_GEN_OUTPUT_FILES}")
+    list(APPEND ALL_GEN_OUTPUT_FILES_cpp ${GEN_OUTPUT_FILE})
+  endforeach()
 
-  add_custom_target(${PKG}_gencpp ALL
-    DEPENDS ${ALL_GEN_OUTPUT_FILES}
-    )
+endmacro()
 
-  message(STATUS "DEP_TARGETS: ${DEP_TARGETS}")
-  if(DEP_TARGETS)
-    add_dependencies(${PKG}_gencpp ${DEP_TARGETS})
-  endif(DEP_TARGETS)
+macro(generate_msgs_cpp PKG)
+  parse_arguments(PKG "MESSAGES;DEPENDENCIES" "" ${ARGN})
+  
+
 
 endmacro()
