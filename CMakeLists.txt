@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 find_package(rosbuild)
-#find_package(genmsg)
+find_package(genmsg)
 
 add_subdirectory(scripts)
 
