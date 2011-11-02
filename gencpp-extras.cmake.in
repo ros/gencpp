@@ -4,7 +4,7 @@ find_program(GENCPP_BIN genmsg_cpp.py
 message(STATUS "GENCPP_BIN found at ${GENCPP_BIN}")
 
 # Generate .msg->.h for cpp
-# List of all generated .h files should be saved in ALL_GEN_OUTPUT_FILES_cpp
+# The generated .h files should be added ALL_GEN_OUTPUT_FILES_cpp
 macro(_generate_msg_cpp ARG_PKG ARG_MSG ARG_IFLAGS ARG_MSG_DEPS ARG_GEN_OUTPUT_DIR)
 
   #Create input and output filenames
@@ -24,12 +24,5 @@ macro(_generate_msg_cpp ARG_PKG ARG_MSG ARG_IFLAGS ARG_MSG_DEPS ARG_GEN_OUTPUT_D
     )
   
   list(APPEND ALL_GEN_OUTPUT_FILES_cpp ${GEN_OUTPUT_FILE})
-
-endmacro()
-
-macro(generate_msgs_cpp PKG)
-  parse_arguments(PKG "MESSAGES;DEPENDENCIES" "" ${ARGN})
-
-
 
 endmacro()
