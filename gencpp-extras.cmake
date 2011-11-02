@@ -1,4 +1,12 @@
-find_program(GENCPP_BIN genmsg_cpp.py)
+if(gencpp_SOURCE_DIR)
+  set(GENCPP_BIN ${gencpp_SOURCE_DIR}/scripts/genmsg_cpp.py CACHE FILEPATH "gencpp bin")
+else()
+  find_program(GENCPP_BIN genmsg_cpp.py)
+endif()
+
+if (NOT GENCPP_BIN)
+  message(FATAL_ERROR "Unable to find gencpp binary genmsg_cpp.py")
+endif()
 
 message(STATUS "GENCPP_BIN found at ${GENCPP_BIN}")
 
@@ -16,7 +24,9 @@ macro(_generate_msgs_cpp ARG_PKG ARG_IFLAGS ARG_MSG_DEPS ARG_MESSAGES ARG_GEN_OU
 
     add_custom_command(OUTPUT ${GEN_OUTPUT_FILE}
       DEPENDS ${GENCPP_BIN} ${MSG_INPUT_FILE} ${ARG_MSG_DEPS}
-      COMMAND ${GENCPP_BIN} ${MSG_INPUT_FILE}
+      COMMAND 
+      /usr/bin/env PYTHONPATH=${genmsg_PYTHONPATH}
+      ${GENCPP_BIN} ${MSG_INPUT_FILE}
       -p ${ARG_PKG}
       -o ${ARG_GEN_OUTPUT_DIR}
       ${ARG_IFLAGS}
@@ -43,7 +53,8 @@ macro(generate_msgs_cpp PKG)
 
     add_custom_command(OUTPUT ${GEN_OUTPUT_FILE}
        DEPENDS ${GENCPP_BIN} ${MSG_INPUT_FILE} ${MSG_DEPS}
-       COMMAND ${GENCPP_BIN} ${MSG_INPUT_FILE}
+       COMMAND /usr/bin/env PYTHONPATH=${genmsg_PYTHONPATH}
+       ${GENCPP_BIN} ${MSG_INPUT_FILE}
        -p ${PKG}
        -o ${GEN_OUTPUT_DIR}
        ${IFLAGS}
