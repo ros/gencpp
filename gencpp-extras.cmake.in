@@ -5,7 +5,7 @@ message(STATUS "GENCPP_BIN found at ${GENCPP_BIN}")
 
 # Generate .msg->.h for cpp
 # List of all generated .h files should be saved in ALL_GEN_OUTPUT_FILES_cpp
-macro(_generate_msgs_cpp ARG_PKG ARM_MSG ARG_IFLAGS ARG_MSG_DEPS ARG_GEN_OUTPUT_DIR)
+macro(_generate_msg_cpp ARG_PKG ARG_MSG ARG_IFLAGS ARG_MSG_DEPS ARG_GEN_OUTPUT_DIR)
 
   #Create input and output filenames
   get_filename_component(MSG_SHORT_NAME ${ARG_MSG} NAME_WE)
@@ -17,9 +17,9 @@ macro(_generate_msgs_cpp ARG_PKG ARM_MSG ARG_IFLAGS ARG_MSG_DEPS ARG_GEN_OUTPUT_
   add_custom_command(OUTPUT ${GEN_OUTPUT_FILE}
     DEPENDS ${GENCPP_BIN} ${MSG_INPUT_FILE} ${ARG_MSG_DEPS}
     COMMAND ${GENCPP_BIN} ${MSG_INPUT_FILE}
+    ${ARG_IFLAGS}
     -p ${ARG_PKG}
     -o ${ARG_GEN_OUTPUT_DIR}
-    ${ARG_IFLAGS}
     COMMENT "Generating C++ code from ${ARG_PKG}/${MSG_SHORT_NAME}"
     )
   

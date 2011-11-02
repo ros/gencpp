@@ -532,6 +532,8 @@ def generate(args):
 
     log_verbose(options.verbose)
 
+    #print("#%s"%options.includepath)
+
     # Read and parse the source msg file
     infile = os.path.abspath(args[1])
     msg_context = genmsg.msg_loader.MsgContext.create_default() # not used?
