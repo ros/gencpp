@@ -1,7 +1,8 @@
-find_program(GENCPP_BIN genmsg_cpp.py
-  PATHS @PKG_BIN_DIRS@)
-
-message(STATUS "GENCPP_BIN found at ${GENCPP_BIN}")
+if(@PACKAGE_NAME@_SOURCE_DIR)
+  find_program_required(GENCPP_BIN genmsg_cpp.py PATHS ${@PACKAGE_NAME@_SOURCE_DIR}/scripts)
+else()
+  find_program_required(GENCPP_BIN genmsg_cpp.py)
+endif()
 
 # Generate .msg->.h for cpp
 # The generated .h files should be added ALL_GEN_OUTPUT_FILES_cpp
