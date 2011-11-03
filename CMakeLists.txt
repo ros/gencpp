@@ -7,5 +7,5 @@ add_subdirectory(scripts)
 
 install_cmake_infrastructure(gencpp
   VERSION 0.0.1
-  CFG_EXTRAS cmake/gencpp-extras.cmake
+  CFG_EXTRAS gencpp-extras.cmake
   )
