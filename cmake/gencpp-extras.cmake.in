@@ -16,14 +16,16 @@ macro(_generate_msg_cpp ARG_PKG ARG_MSG ARG_IFLAGS ARG_MSG_DEPS ARG_GEN_OUTPUT_D
   set(GEN_OUTPUT_FILE ${ARG_GEN_OUTPUT_DIR}/${MSG_GENERATED_NAME})
 
   if(@PACKAGE_NAME@_SOURCE_DIR)
-    set(ENV_PREFIX "/usr/bin/env PYTHONPATH=${genmsg_PYTHONPATH}")
+    set(ENV_PREFIX1 "/usr/bin/env")
+    set(ENV_PREFIX2 "PYTHONPATH=${genmsg_PYTHONPATH}")
   else()
-    set(ENV_PREFIX "")
+    set(ENV_PREFIX1 "")
+    set(ENV_PREFIX2 "")
   endif()
 
   add_custom_command(OUTPUT ${GEN_OUTPUT_FILE}
     DEPENDS ${GENCPP_BIN} ${MSG_INPUT_FILE} ${ARG_MSG_DEPS}
-    COMMAND ${ENV_PREFIX} ${GENCPP_BIN} ${MSG_INPUT_FILE}
+    COMMAND ${ENV_PREFIX1} ${ENV_PREFIX2} ${GENCPP_BIN} ${MSG_INPUT_FILE}
     ${ARG_IFLAGS}
     -p ${ARG_PKG}
     -o ${ARG_GEN_OUTPUT_DIR}
