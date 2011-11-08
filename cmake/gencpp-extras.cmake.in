@@ -1,8 +1,10 @@
 message("GENCPP: package name source dir @PACKAGE_NAME@_SOURCE_DIR")
 if(@PACKAGE_NAME@_SOURCE_DIR)
-  find_program_required(GENCPP_BIN genmsg_cpp.py PATHS ${@PACKAGE_NAME@_SOURCE_DIR}/scripts)
+  find_program_required(GENMSG_CPP_BIN genmsg_cpp.py PATHS ${@PACKAGE_NAME@_SOURCE_DIR}/scripts)
+  find_program_required(GENSRV_CPP_BIN gensrv_cpp.py PATHS ${@PACKAGE_NAME@_SOURCE_DIR}/scripts)
 else()
-  find_program_required(GENCPP_BIN genmsg_cpp.py)
+  find_program_required(GENMSG_CPP_BIN genmsg_cpp.py)
+  find_program_required(GENSRV_CPP_BIN gensrv_cpp.py)
 endif()
 
 # Generate .msg->.h for cpp
@@ -25,12 +27,43 @@ macro(_generate_msg_cpp ARG_PKG ARG_MSG ARG_IFLAGS ARG_MSG_DEPS ARG_GEN_OUTPUT_D
   endif()
 
   add_custom_command(OUTPUT ${GEN_OUTPUT_FILE}
-    DEPENDS ${GENCPP_BIN} ${MSG_INPUT_FILE} ${ARG_MSG_DEPS}
-    COMMAND ${ENV_PREFIX1} ${ENV_PREFIX2} ${GENCPP_BIN} ${MSG_INPUT_FILE}
+    DEPENDS ${GENMSG_CPP_BIN} ${MSG_INPUT_FILE} ${ARG_MSG_DEPS}
+    COMMAND ${ENV_PREFIX1} ${ENV_PREFIX2} ${GENMSG_CPP_BIN} ${MSG_INPUT_FILE}
     ${ARG_IFLAGS}
     -p ${ARG_PKG}
     -o ${ARG_GEN_OUTPUT_DIR}
-    COMMENT "Generating C++ code from ${ARG_PKG}/${MSG_SHORT_NAME}"
+    COMMENT "Generating C++ code from MSG ${ARG_PKG}/${MSG_SHORT_NAME}"
+    )
+
+  list(APPEND ALL_GEN_OUTPUT_FILES_cpp ${GEN_OUTPUT_FILE})
+
+endmacro()
+
+#todo, these macros are practically equal. Check for input file extension instead
+macro(_generate_srv_cpp ARG_PKG ARG_SRV ARG_IFLAGS ARG_MSG_DEPS ARG_GEN_OUTPUT_DIR)
+
+  #Create input and output filenames                                                                                                                                        
+  get_filename_component(SRV_SHORT_NAME ${ARG_SRV} NAME_WE)
+  set(SRV_INPUT_FILE ${CMAKE_CURRENT_SOURCE_DIR}/${ARG_SRV})
+
+  set(SRV_GENERATED_NAME ${SRV_SHORT_NAME}.h)
+  set(GEN_OUTPUT_FILE ${ARG_GEN_OUTPUT_DIR}/${SRV_GENERATED_NAME})
+
+  if(@PACKAGE_NAME@_SOURCE_DIR)
+    set(ENV_PREFIX1 "/usr/bin/env")
+    set(ENV_PREFIX2 "PYTHONPATH=${genmsg_PYTHONPATH}")
+  else()
+    set(ENV_PREFIX1 "")
+    set(ENV_PREFIX2 "")
+  endif()
+
+  add_custom_command(OUTPUT ${GEN_OUTPUT_FILE}
+    DEPENDS ${GENSRV_CPP_BIN} ${SRV_INPUT_FILE} ${ARG_MSG_DEPS}
+    COMMAND ${ENV_PREFIX1} ${ENV_PREFIX2} ${GENSRV_CPP_BIN} ${SRV_INPUT_FILE}
+    ${ARG_IFLAGS}
+    -p ${ARG_PKG}
+    -o ${ARG_GEN_OUTPUT_DIR}
+    COMMENT "Generating C++ code from SRV ${ARG_PKG}/${SRV_SHORT_NAME}"
     )
 
   list(APPEND ALL_GEN_OUTPUT_FILES_cpp ${GEN_OUTPUT_FILE})
