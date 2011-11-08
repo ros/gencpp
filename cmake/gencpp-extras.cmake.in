@@ -1,3 +1,4 @@
+message("GENCPP: package name source dir @PACKAGE_NAME@_SOURCE_DIR")
 if(@PACKAGE_NAME@_SOURCE_DIR)
   find_program_required(GENCPP_BIN genmsg_cpp.py PATHS ${@PACKAGE_NAME@_SOURCE_DIR}/scripts)
 else()
