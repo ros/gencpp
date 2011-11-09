@@ -10,7 +10,6 @@ Architecture: all
 Depends: ${misc:Depends}
 Description: It generates cpp, it does
  <insert long description, indented with spaces>
-
 X-ROS-Pkg-Name: gencpp
 X-ROS-Pkg-Depends: rosbuild, genmsg
 X-ROS-System-Depends:
