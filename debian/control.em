@@ -1,7 +1,7 @@
 Source: @(CATKIN_PACKAGE_PREFIX)gencpp
 Section: misc
 Priority: extra
-Maintainer: Troy Straszheim <straszheim@willowgarage.com>
+Maintainer: Troy Straszheim <straszheim@@willowgarage.com>
 Build-Depends: debhelper (>= 7), cmake, make, catkin
 Homepage: <insert the upstream URL, if relevant>
 
