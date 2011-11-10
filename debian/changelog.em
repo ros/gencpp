@@ -1,4 +1,4 @@
-@(CATKIN_PACKAGE_PREFIX)gencpp (0.0.2) lucid; urgency=low
+@(CATKIN_PACKAGE_PREFIX)gencpp (0.0.2) @(CATKIN_LINUX_DISTRIBUTIONS); urgency=low
 
   * now with autoexpanded package name
 
