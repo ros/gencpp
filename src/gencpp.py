@@ -50,6 +50,7 @@ def msg_type_to_cpp(type):
     else:
         return cpp_type
 
+#used2
 def cpp_message_declarations(name_prefix, msg):
     """
     Returns the different possible C++ declarations for a message given the message itself.
@@ -68,11 +69,7 @@ def cpp_message_declarations(name_prefix, msg):
         cpp_name = ' ::%s::%s'%(pkg, basetype)
     return ('%s_'%(cpp_name), '%s_<ContainerAllocator> '%(cpp_name), '%s'%(cpp_name))
 
-def escape_string(str):
-    str = str.replace('\\', '\\\\')
-    str = str.replace('"', '\\"')
-    return str
-        
+#todo
 def is_fixed_length(spec, includepath):
     """
     Returns whether or not the message is fixed-length
@@ -103,27 +100,7 @@ def is_fixed_length(spec, includepath):
         
     return True
     
-def compute_full_text_escaped(gen_deps_dict):
-    """
-    Same as genmsg.gentools.compute_full_text, except that the
-    resulting text is escaped to be safe for C++ double quotes
-
-    @param get_deps_dict: dictionary returned by get_dependencies call
-    @type  get_deps_dict: dict
-    @return: concatenated text for msg/srv file and embedded msg/srv types. Text will be escaped for double quotes
-    @rtype: str
-    """
-    definition = genmsg.gentools.compute_full_text(gen_deps_dict)
-    lines = definition.split('\n')
-    s = StringIO()
-    for line in lines:
-        line = escape_string(line)
-        s.write('%s\\n\\\n'%(line))
-        
-    val = s.getvalue()
-    s.close()
-    return val
-
+#used2
 def default_value(type):
     """
     Returns the value to initialize a message member with.  0 for integer types, 0.0 for floating point, false for bool,
@@ -141,7 +118,7 @@ def default_value(type):
         return 'false'
 
     return ""
-
+#used2
 def takes_allocator(type):
     """
     Returns whether or not a type can take an allocator in its constructor.  False for all builtin types except string.
@@ -154,6 +131,7 @@ def takes_allocator(type):
                         'char', 'uint8', 'uint16', 'uint32', 'uint64',
                         'float32', 'float64', 'bool', 'time', 'duration']
 
+#used
 def generate_fixed_length_assigns(spec, container_gets_allocator, cpp_name_prefix):
     """
     Initialize any fixed-length arrays

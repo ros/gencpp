@@ -40,39 +40,32 @@ import sys
 import os
 import em
 
-
 import genmsg.gentools
 import genmsg.command_line
 
-template_map = { 'msg.h.template':'@NAME@.h' }
+msg_template_map = { 'msg.h.template':'@NAME@.h' }
+srv_template_map = { 'srv.h.template':'@NAME@.h' }
 
 def generate_from_templates(input_file, msg_context, spec, output_dir, template_dir, template_map):
 
     md5sum = genmsg.compute_md5(msg_context, spec)
 
     g = { "file_name_in":input_file,
-        "spec":spec,
-        "md5sum":md5sum}
+          "spec":spec,
+          "md5sum":md5sum}
 
     for template_file_name, output_file_name in template_map.items():
         template_file = os.path.join(template_dir, template_file_name)
         output_file = os.path.join(output_dir, output_file_name.replace("@NAME@", spec.short_name))
 
-        print "generate_from_template %s %s %s" % (input_file, template_file, output_file) 
+        #print "generate_from_template %s %s %s" % (input_file, template_file, output_file) 
 
         ofile = open(output_file, 'w') #todo try
         
-        import time
-
         # todo, reuse interpreter
-        print "TIME IS:"
-        print time.time()
         interpreter = em.Interpreter(output=ofile, globals=g, options={em.RAW_OPT:True,em.BUFFERED_OPT:True})
-        print time.time()
         interpreter.file(open(template_file)) #todo try
-        print time.time()
         interpreter.shutdown()
-        print time.time()
 
 
 def generate(input_file, options):
@@ -88,29 +81,55 @@ def generate(input_file, options):
         if e.errno != 17: # file exists
             raise
 
+
     input_file = os.path.abspath(input_file)
     msg_context = genmsg.msg_loader.MsgContext.create_default()
     full_type_name = genmsg.gentools.compute_full_type_name(options.package, os.path.basename(input_file))
-    spec = genmsg.msg_loader.load_msg_from_file(msg_context, input_file, full_type_name)
 
     if( options.includepath ):
         search_path = genmsg.command_line.includepath_to_dict(options.includepath)
     else:
         search_path = {}
 
+
+    if input_file.endswith(".msg"):
+        spec = genmsg.msg_loader.load_msg_from_file(msg_context, input_file, full_type_name)
+    elif input_file.endswith(".srv"):
+        spec = genmsg.msg_loader.load_srv_from_file(msg_context, input_file, full_type_name)        
+    else:
+        assert False, "Uknown file extension for %s"%input_file
+
     try:
         genmsg.msg_loader.load_depends(msg_context, spec, search_path)
     except genmsg.InvalidMsgSpec as e:
         raise genmsg.MsgGenerationException("Cannot read .msg for %s: %s"%(full_type_name, str(e)))
 
-
-    generate_from_templates(input_file,
-                            msg_context,
-                            spec,
-                            options.outdir,
-                            options.emdir,
-                            template_map)
-
+    if input_file.endswith(".msg"):
+        generate_from_templates(input_file,
+                                msg_context,
+                                spec,
+                                options.outdir,
+                                options.emdir,
+                                msg_template_map)
+    elif input_file.endswith(".srv"):
+        generate_from_templates(input_file,
+                                msg_context,
+                                spec,
+                                options.outdir,
+                                options.emdir,
+                                srv_template_map)
+        generate_from_templates(input_file,
+                                msg_context,
+                                spec.request,
+                                options.outdir,
+                                options.emdir,
+                                msg_template_map)
+        generate_from_templates(input_file,
+                                msg_context,
+                                spec.response,
+                                options.outdir,
+                                options.emdir,
+                                msg_template_map)
 
 def generate_cl(argv):
     # print argv

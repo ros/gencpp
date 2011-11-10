@@ -21,7 +21,7 @@ macro(_generate_msg_cpp ARG_PKG ARG_MSG ARG_IFLAGS ARG_MSG_DEPS ARG_GEN_OUTPUT_D
 
   if(@PACKAGE_NAME@_SOURCE_DIR)
     set(ENV_PREFIX1 "/usr/bin/env")
-    set(ENV_PREFIX2 "PYTHONPATH=${genmsg_PYTHONPATH}")
+    set(ENV_PREFIX2 "PYTHONPATH=$PYTHONPATH:${genmsg_PYTHONPATH}:${gencpp_PYTHONPATH}")
   else()
     set(ENV_PREFIX1 "")
     set(ENV_PREFIX2 "")
@@ -52,7 +52,7 @@ macro(_generate_srv_cpp ARG_PKG ARG_SRV ARG_IFLAGS ARG_MSG_DEPS ARG_GEN_OUTPUT_D
 
   if(@PACKAGE_NAME@_SOURCE_DIR)
     set(ENV_PREFIX1 "/usr/bin/env")
-    set(ENV_PREFIX2 "PYTHONPATH=${genmsg_PYTHONPATH}")
+    set(ENV_PREFIX2 "PYTHONPATH=$PYTHONPATH:${genmsg_PYTHONPATH}:${gencpp_PYTHONPATH}")
   else()
     set(ENV_PREFIX1 "")
     set(ENV_PREFIX2 "")
