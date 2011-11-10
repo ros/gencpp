@@ -54,7 +54,7 @@ def generate(srv_path, options):
 
     import em
 
-    template_dir = (sys.path[0])
+    template_dir = (options.emdir)
 
     infile = os.path.abspath(srv_path)
     msg_context = genmsg.msg_loader.MsgContext.create_default()
@@ -99,6 +99,10 @@ def generate_services(argv):
     parser.add_option("-I", dest='includepath',
                       help="include path to search for messages",
                       action="append")
+    parser.add_option("-e", dest='emdir',
+                      help="directory containing empy templates",
+                      default=sys.path[0])
+
     (options, argv) = parser.parse_args(argv)
 
     if( not options.package or not options.outdir or len(argv) != 2):

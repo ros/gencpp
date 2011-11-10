@@ -10,11 +10,13 @@
 export DH_VERBOSE=1
 export DH_OPTIONS=-v
 
+# include $(catkin_DIR)/debian.rules
+
 %:
 	dh  $@
 
 override_dh_auto_configure:
-	dh_auto_configure -Scmake
+	dh_auto_configure -Scmake -- -DCMAKE_INSTALL_PREFIX=$(CMAKE_INSTALL_PREFIX) -DCMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) -DCATKIN=YES
 	dh_auto_configure -Spython_distutils
 
 override_dh_auto_install:
