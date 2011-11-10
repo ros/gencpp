@@ -67,7 +67,7 @@ def generate_from_templates(input_file, msg_context, spec, output_dir, template_
         # todo, reuse interpreter
         print "TIME IS:"
         print time.time()
-        interpreter = em.Interpreter(output=ofile, globals=g, options={em.RAW_OPT:1})
+        interpreter = em.Interpreter(output=ofile, globals=g, options={em.RAW_OPT:True,em.BUFFERED_OPT:True})
         print time.time()
         interpreter.file(open(template_file)) #todo try
         print time.time()
