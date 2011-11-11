@@ -9,3 +9,5 @@ install_cmake_infrastructure(gencpp
   CFG_EXTRAS gencpp-extras.cmake
   PYTHONPATH src
   )
+
+catkin_package(gencpp)
