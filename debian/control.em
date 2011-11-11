@@ -13,3 +13,4 @@ Description: It generates cpp, it does
 X-ROS-Pkg-Name: gencpp
 X-ROS-Pkg-Depends: catkin, genmsg
 X-ROS-System-Depends:
+X-ROS-Message-Generator: C++
