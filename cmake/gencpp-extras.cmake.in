@@ -43,7 +43,7 @@ endmacro()
 #todo, these macros are practically equal. Check for input file extension instead
 macro(_generate_srv_cpp ARG_PKG ARG_SRV ARG_IFLAGS ARG_MSG_DEPS ARG_GEN_OUTPUT_DIR)
 
-  #Create input and output filenames                                                                                                                                        
+  #Create input and output filenames
   get_filename_component(SRV_SHORT_NAME ${ARG_SRV} NAME_WE)
   set(SRV_INPUT_FILE ${CMAKE_CURRENT_SOURCE_DIR}/${ARG_SRV})
 
@@ -71,3 +71,5 @@ macro(_generate_srv_cpp ARG_PKG ARG_SRV ARG_IFLAGS ARG_MSG_DEPS ARG_GEN_OUTPUT_D
   list(APPEND ALL_GEN_OUTPUT_FILES_cpp ${GEN_OUTPUT_FILE})
 
 endmacro()
+
+set(gencpp_INSTALL_DIR include)
