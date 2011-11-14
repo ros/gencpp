@@ -1,3 +1,6 @@
+#Make sure we can find our own generated messages
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/gen/cpp)
+
 if(@PACKAGE_NAME@_SOURCE_DIR)
   find_program_required(GENMSG_CPP_BIN genmsg_cpp.py PATHS ${@PACKAGE_NAME@_SOURCE_DIR}/scripts)
   find_program_required(GENSRV_CPP_BIN gensrv_cpp.py PATHS ${@PACKAGE_NAME@_SOURCE_DIR}/scripts)
