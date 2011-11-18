@@ -75,4 +75,8 @@ macro(_generate_srv_cpp ARG_PKG ARG_SRV ARG_IFLAGS ARG_MSG_DEPS ARG_GEN_OUTPUT_D
 
 endmacro()
 
+macro(_generate_module_cpp)
+  # the macros, they do nothing
+endmacro()
+
 set(gencpp_INSTALL_DIR include)
