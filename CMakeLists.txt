@@ -10,4 +10,9 @@ install_cmake_infrastructure(gencpp
   PYTHONPATH src
   )
 
+file(WRITE gencpp "C++")
+install(FILES gencpp
+  DESTINATION etc/langs
+  )
+
 catkin_package(gencpp)
