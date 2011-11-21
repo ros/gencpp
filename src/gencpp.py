@@ -1,5 +1,7 @@
 import genmsg.msgs
 
+__version__ = "1.0"
+
 MSG_TYPE_TO_CPP = {'byte': 'int8_t',
                    'char': 'uint8_t',
                    'bool': 'uint8_t',

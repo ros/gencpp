@@ -2,12 +2,15 @@
 
 from setuptools import setup
 
+from gencpp import __version__
+
 setup(name='gencpp',
-      version= '0.1.0',
-      packages=[],
+      version=__version__,
+      packages=['gencpp'],
+      package_dir={'':'src'},
       install_requires=['genmsg'],
       scripts = ['scripts/genmsg_cpp.py'],
-      author = "Josh Faust, Troy Straszheim", 
+      author = "Morgen Kjaergaard, Troy Straszheim, Josh Faust", 
       author_email = "straszheim@willowgarage.com",
       url = "http://www.ros.org/wiki/gencpp",
       download_url = "http://pr.willowgarage.com/downloads/gencpp/", 

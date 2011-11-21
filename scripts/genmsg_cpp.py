@@ -64,6 +64,8 @@ def generate_from_templates(input_file, msg_context, spec, output_dir, template_
         
         # todo, reuse interpreter
         interpreter = em.Interpreter(output=ofile, globals=g, options={em.RAW_OPT:True,em.BUFFERED_OPT:True})
+        if not os.path.isfile(template_file):
+            raise RuntimeError, "Template file %s not found in template dir %s" % (template_file_name, template_dir)
         interpreter.file(open(template_file)) #todo try
         interpreter.shutdown()
 
