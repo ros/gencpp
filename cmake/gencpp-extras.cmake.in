@@ -22,17 +22,10 @@ macro(_generate_msg_cpp ARG_PKG ARG_MSG ARG_IFLAGS ARG_MSG_DEPS ARG_GEN_OUTPUT_D
   set(MSG_GENERATED_NAME ${MSG_SHORT_NAME}.h)
   set(GEN_OUTPUT_FILE ${ARG_GEN_OUTPUT_DIR}/${MSG_GENERATED_NAME})
 
-  if(@PACKAGE_NAME@_SOURCE_DIR)
-    set(ENV_PREFIX1 "/usr/bin/env")
-    set(ENV_PREFIX2 "PYTHONPATH=$PYTHONPATH:${genmsg_PYTHONPATH}:${gencpp_PYTHONPATH}")
-  else()
-    set(ENV_PREFIX1 "")
-    set(ENV_PREFIX2 "")
-  endif()
-
+  assert(CATKIN_ENV)
   add_custom_command(OUTPUT ${GEN_OUTPUT_FILE}
     DEPENDS ${GENMSG_CPP_BIN} ${MSG_INPUT_FILE} ${ARG_MSG_DEPS}
-    COMMAND ${ENV_PREFIX1} ${ENV_PREFIX2} ${GENMSG_CPP_BIN} ${MSG_INPUT_FILE}
+    COMMAND ${CATKIN_ENV} ${GENMSG_CPP_BIN} ${MSG_INPUT_FILE}
     ${ARG_IFLAGS}
     -p ${ARG_PKG}
     -o ${ARG_GEN_OUTPUT_DIR}
@@ -55,16 +48,19 @@ macro(_generate_srv_cpp ARG_PKG ARG_SRV ARG_IFLAGS ARG_MSG_DEPS ARG_GEN_OUTPUT_D
   set(GEN_OUTPUT_FILE ${ARG_GEN_OUTPUT_DIR}/${SRV_GENERATED_NAME})
 
   if(@PACKAGE_NAME@_SOURCE_DIR)
+    set(this_pythonpath "${genmsg_PYTHONPATH}:${gencpp_PYTHONPATH}")
+    # use a subshelling /bin/env thing
     set(ENV_PREFIX1 "/usr/bin/env")
     set(ENV_PREFIX2 "PYTHONPATH=$PYTHONPATH:${genmsg_PYTHONPATH}:${gencpp_PYTHONPATH}")
   else()
-    set(ENV_PREFIX1 "")
+    set(ENV_PREFIX1 "${catkin_INSTALL_PREFIX}/env.sh")
     set(ENV_PREFIX2 "")
   endif()
 
+  assert(CATKIN_ENV)
   add_custom_command(OUTPUT ${GEN_OUTPUT_FILE}
     DEPENDS ${GENSRV_CPP_BIN} ${SRV_INPUT_FILE} ${ARG_MSG_DEPS}
-    COMMAND ${ENV_PREFIX1} ${ENV_PREFIX2} ${GENSRV_CPP_BIN} ${SRV_INPUT_FILE}
+    COMMAND ${CATKIN_ENV} ${GENSRV_CPP_BIN} ${SRV_INPUT_FILE}
     ${ARG_IFLAGS}
     -p ${ARG_PKG}
     -o ${ARG_GEN_OUTPUT_DIR}
