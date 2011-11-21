@@ -10,8 +10,8 @@ install_cmake_infrastructure(gencpp
   PYTHONPATH src
   )
 
-file(WRITE gencpp "C++")
-install(FILES gencpp
+file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/gencpp "C++")
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/gencpp
   DESTINATION etc/langs
   )
 
