@@ -2,10 +2,11 @@
 
 from setuptools import setup
 
-from gencpp import __version__
+# from gencpp import __version__
 
 setup(name='gencpp',
-      version=__version__,
+#      version=__version__, FIXME
+      version="1.0",
       packages=['gencpp'],
       package_dir={'':'src'},
       install_requires=['genmsg'],
