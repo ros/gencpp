@@ -1,5 +1,5 @@
-#Make sure we can find our own generated messages
-include_directories(${CMAKE_CURRENT_BINARY_DIR}/gen/cpp)
+#Make sure we can find buildspace generated messages
+include_directories(${CMAKE_BINARY_DIR}/gen/cpp)
 
 if(@PACKAGE_NAME@_SOURCE_DIR)
   find_program_required(GENMSG_CPP_BIN genmsg_cpp.py PATHS ${@PACKAGE_NAME@_SOURCE_DIR}/scripts)
