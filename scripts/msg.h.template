@@ -48,7 +48,6 @@
  *
  */
 
-@# Move this stuff to an external library
 @{
 import genmsg.msgs
 import gencpp

@@ -2,12 +2,10 @@
 include_directories(${CMAKE_BINARY_DIR}/gen/cpp)
 
 if(@PACKAGE_NAME@_SOURCE_DIR)
-  find_program_required(GENMSG_CPP_BIN genmsg_cpp.py PATHS ${@PACKAGE_NAME@_SOURCE_DIR}/scripts)
-  find_program_required(GENSRV_CPP_BIN gensrv_cpp.py PATHS ${@PACKAGE_NAME@_SOURCE_DIR}/scripts)
+  find_program_required(GENCPP_BIN gen_cpp.py PATHS ${@PACKAGE_NAME@_SOURCE_DIR}/scripts)
   set(GENCPP_TEMPLATE_DIR ${@PACKAGE_NAME@_SOURCE_DIR}/scripts)
 else()
-  find_program_required(GENMSG_CPP_BIN genmsg_cpp.py)
-  find_program_required(GENSRV_CPP_BIN gensrv_cpp.py)
+  find_program_required(GENCPP_BIN gen_cpp.py)
   set(GENCPP_TEMPLATE_DIR ${CMAKE_INSTALL_PREFIX}/share/gencpp)
 endif()
 
@@ -16,6 +14,7 @@ endif()
 macro(_generate_msg_cpp ARG_PKG ARG_MSG ARG_IFLAGS ARG_MSG_DEPS ARG_GEN_OUTPUT_DIR)
 
   #Create input and output filenames
+  get_filename_component(MSG_NAME ${ARG_MSG} NAME)
   get_filename_component(MSG_SHORT_NAME ${ARG_MSG} NAME_WE)
   set(MSG_INPUT_FILE ${CMAKE_CURRENT_SOURCE_DIR}/${ARG_MSG})
 
@@ -24,52 +23,22 @@ macro(_generate_msg_cpp ARG_PKG ARG_MSG ARG_IFLAGS ARG_MSG_DEPS ARG_GEN_OUTPUT_D
 
   assert(CATKIN_ENV)
   add_custom_command(OUTPUT ${GEN_OUTPUT_FILE}
-    DEPENDS ${GENMSG_CPP_BIN} ${MSG_INPUT_FILE} ${ARG_MSG_DEPS}
-    COMMAND ${CATKIN_ENV} ${GENMSG_CPP_BIN} ${MSG_INPUT_FILE}
+    DEPENDS ${GENCPP_BIN} ${MSG_INPUT_FILE} ${ARG_MSG_DEPS}
+    COMMAND ${CATKIN_ENV} ${GENCPP_BIN} ${MSG_INPUT_FILE}
     ${ARG_IFLAGS}
     -p ${ARG_PKG}
     -o ${ARG_GEN_OUTPUT_DIR}
     -e ${GENCPP_TEMPLATE_DIR}
-    COMMENT "Generating C++ code from MSG ${ARG_PKG}/${MSG_SHORT_NAME}"
+    COMMENT "Generating C++ code from ${ARG_PKG}/${MSG_NAME}"
     )
 
   list(APPEND ALL_GEN_OUTPUT_FILES_cpp ${GEN_OUTPUT_FILE})
 
 endmacro()
 
-#todo, these macros are practically equal. Check for input file extension instead
+#gencpp uses the same program to generate srv and msg files, so call the same macro
 macro(_generate_srv_cpp ARG_PKG ARG_SRV ARG_IFLAGS ARG_MSG_DEPS ARG_GEN_OUTPUT_DIR)
-
-  #Create input and output filenames
-  get_filename_component(SRV_SHORT_NAME ${ARG_SRV} NAME_WE)
-  set(SRV_INPUT_FILE ${CMAKE_CURRENT_SOURCE_DIR}/${ARG_SRV})
-
-  set(SRV_GENERATED_NAME ${SRV_SHORT_NAME}.h)
-  set(GEN_OUTPUT_FILE ${ARG_GEN_OUTPUT_DIR}/${SRV_GENERATED_NAME})
-
-  if(@PACKAGE_NAME@_SOURCE_DIR)
-    set(this_pythonpath "${genmsg_PYTHONPATH}:${gencpp_PYTHONPATH}")
-    # use a subshelling /bin/env thing
-    set(ENV_PREFIX1 "/usr/bin/env")
-    set(ENV_PREFIX2 "PYTHONPATH=$PYTHONPATH:${genmsg_PYTHONPATH}:${gencpp_PYTHONPATH}")
-  else()
-    set(ENV_PREFIX1 "${catkin_INSTALL_PREFIX}/env.sh")
-    set(ENV_PREFIX2 "")
-  endif()
-
-  assert(CATKIN_ENV)
-  add_custom_command(OUTPUT ${GEN_OUTPUT_FILE}
-    DEPENDS ${GENSRV_CPP_BIN} ${SRV_INPUT_FILE} ${ARG_MSG_DEPS}
-    COMMAND ${CATKIN_ENV} ${GENSRV_CPP_BIN} ${SRV_INPUT_FILE}
-    ${ARG_IFLAGS}
-    -p ${ARG_PKG}
-    -o ${ARG_GEN_OUTPUT_DIR}
-    -e ${GENCPP_TEMPLATE_DIR}
-    COMMENT "Generating C++ code from SRV ${ARG_PKG}/${SRV_SHORT_NAME}"
-    )
-
-  list(APPEND ALL_GEN_OUTPUT_FILES_cpp ${GEN_OUTPUT_FILE})
-
+  _generate_msg_cpp(${ARG_PKG} ${ARG_SRV} "${ARG_IFLAGS}" "${ARG_MSG_DEPS}" ${ARG_GEN_OUTPUT_DIR})
 endmacro()
 
 macro(_generate_module_cpp)
