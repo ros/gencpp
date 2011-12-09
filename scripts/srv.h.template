@@ -108,6 +108,44 @@ struct @trait_class< @cpp_full_name > {
 };
 @[end for]
 
+// mapping of service_traits to message_traits namespaces for Request and Response
+template<>
+struct MD5Sum< @(cpp_full_name)Request>
+{
+  static const char* value()
+  {
+    return ros::message_traits::MD5Sum< @(cpp_full_name)Request>::value();
+  }
+};
+
+template<>
+struct DataType< @(cpp_full_name)Request>
+{
+  static const char* value()
+  {
+    return ros::message_traits::DataType< @(cpp_full_name)Request>::value();
+  }
+};
+
+// mapping of service_traits to message_traits namespaces for Request and Response
+template<>
+struct MD5Sum< @(cpp_full_name)Response>
+{
+  static const char* value()
+  {
+    return ros::message_traits::MD5Sum< @(cpp_full_name)Response>::value();
+  }
+};
+
+template<>
+struct DataType< @(cpp_full_name)Response>
+{
+  static const char* value()
+  {
+    return ros::message_traits::DataType< @(cpp_full_name)Response>::value();
+  }
+};
+
 } // namespace service_traits
 } // namespace ros
 
