@@ -1,12 +1,12 @@
 Package: gencpp
-Version: 3.4.5
+Version: 0.1.0
 Section: misc
 Priority: extra
-Architecture: all
-Depends: ${misc:Depends} python-empy, cmake, make, @(CATKIN_PACKAGE_PREFIX)genmsg, @(CATKIN_PACKAGE_PREFIX)catkin
-Build-Depends: debhelper (>= 7), cmake, gcc, make, python, python-empy, python-setuptools,
-               @(CATKIN_PACKAGE_PREFIX)catkin, @(CATKIN_PACKAGE_PREFIX)genmsg 
-Description: Willow Garage low level build system macros and infrastructure
+Architecture: any
+Depends: python-empy, @(PackagePrefix)genmsg, @(PackagePrefix)catkin
+Build-Depends: python, python-empy, python-setuptools,
+               @(PackagePrefix)catkin, @(PackagePrefix)genmsg 
+Description: ros message generation, cpp style.
 Author: Troy Straszheim <straszheim@willowgarage.com>, Morten Kjaergaard
 Maintainer: Troy Straszheim <straszheim@willowgarage.com>
 Homepage: http://www.ros.org
