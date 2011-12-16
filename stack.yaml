@@ -1,5 +1,5 @@
 Package: gencpp
-Version: 0.1.0
+Version: 0.1.2
 Section: misc
 Priority: extra
 Architecture: any
@@ -16,3 +16,7 @@ Catkin-CopyrightType:  willowgarage
 Catkin-Depends: catkin, genmsg
 Catkin-ROS-Message-Generator: cpp
 Catkin-DebRulesType: python_distutils
+
+Release-Pull: git://github.com/wg-debs/gencpp.git
+Release-Push: git@github.com:wg-debs/gencpp.git
+
