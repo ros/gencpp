@@ -6,9 +6,9 @@ from setuptools import setup
 
 setup(name='gencpp',
 #      version=__version__, FIXME
-      version="1.0",
+      version="0.0.0",
       packages=['gencpp'],
-      package_dir={'':'src'},
+      package_dir={'gencpp':'src/gencpp'},
       install_requires=['genmsg'],
       scripts = ['scripts/gen_cpp.py'],
       author = "Morgen Kjaergaard, Troy Straszheim, Josh Faust",
