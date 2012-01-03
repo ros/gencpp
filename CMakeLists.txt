@@ -15,5 +15,4 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/gencpp
   DESTINATION etc/langs
   )
 
-catkin_package(gencpp)
 enable_python(gencpp)
