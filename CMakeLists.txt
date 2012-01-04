@@ -14,4 +14,4 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/gencpp
   DESTINATION etc/langs
   )
 
-export_python_dirs(src)
+catkin_export_python(src)
