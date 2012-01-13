@@ -6,9 +6,9 @@ MSG_TYPE_TO_CPP = {'byte': 'int8_t',
                    'char': 'uint8_t',
                    'bool': 'uint8_t',
                    'uint8': 'uint8_t',
-                   'int8': 'int8_t', 
+                   'int8': 'int8_t',
                    'uint16': 'uint16_t',
-                   'int16': 'int16_t', 
+                   'int16': 'int16_t',
                    'uint32': 'uint32_t',
                    'int32': 'int32_t',
                    'uint64': 'uint64_t',
@@ -24,7 +24,7 @@ def msg_type_to_cpp(type):
     """
     Converts a message type (e.g. uint32, std_msgs/String, etc.) into the C++ declaration
     for that type (e.g. uint32_t, std_msgs::String_<ContainerAllocator>)
-    
+
     @param type: The message type
     @type type: str
     @return: The C++ declaration
@@ -43,7 +43,7 @@ def msg_type_to_cpp(type):
         pkg = base_type.split('/')[0]
         msg = base_type.split('/')[1]
         cpp_type = ' ::%s::%s_<ContainerAllocator> '%(pkg, msg)
-        
+
     if (is_array):
         if (array_len is None):
             return 'std::vector<%s, typename ContainerAllocator::template rebind<%s>::other > '%(cpp_type, cpp_type)
@@ -56,14 +56,14 @@ def msg_type_to_cpp(type):
 def cpp_message_declarations(name_prefix, msg):
     """
     Returns the different possible C++ declarations for a message given the message itself.
-    
+
     @param name_prefix: The C++ prefix to be prepended to the name, e.g. "std_msgs::"
     @type name_prefix: str
     @param msg: The message type
     @type msg: str
     @return: A tuple of 3 different names.  cpp_message_decelarations("std_msgs::", "String") returns the tuple
         ("std_msgs::String_", "std_msgs::String_<ContainerAllocator>", "std_msgs::String")
-    @rtype: str 
+    @rtype: str
     """
     pkg, basetype = genmsg.names.package_resource_name(msg)
     cpp_name = ' ::%s%s'%(name_prefix, msg)
@@ -75,7 +75,7 @@ def cpp_message_declarations(name_prefix, msg):
 def is_fixed_length(spec, includepath):
     """
     Returns whether or not the message is fixed-length
-    
+
     @param spec: The message spec
     @type spec: genmsg.msgs.MsgSpec
     @param package: The package of the
@@ -86,28 +86,28 @@ def is_fixed_length(spec, includepath):
     for field in spec.parsed_fields():
         if (field.is_array and field.array_len is None):
             return False
-        
+
         if (field.base_type == 'string'):
             return False
-        
+
         if (not field.is_builtin):
             types.append(field.base_type)
-            
+
     types = set(types)
     for type in types:
         type = genmsg.msgs.resolve_type(type, spec.package)
         (_, new_spec) = genmsg.msg_loader.load_msg_by_type(msg_context, type, includepath, spec.package)
         if (not is_fixed_length(new_spec, includepath)):
             return False
-        
+
     return True
-    
+
 #used2
 def default_value(type):
     """
     Returns the value to initialize a message member with.  0 for integer types, 0.0 for floating point, false for bool,
     empty string for everything else
-    
+
     @param type: The type
     @type type: str
     """
@@ -125,7 +125,7 @@ def takes_allocator(type):
     """
     Returns whether or not a type can take an allocator in its constructor.  False for all builtin types except string.
     True for all others.
-    
+
     @param type: The type
     @type: str
     """
@@ -133,11 +133,16 @@ def takes_allocator(type):
                         'char', 'uint8', 'uint16', 'uint32', 'uint64',
                         'float32', 'float64', 'bool', 'time', 'duration']
 
+def escape_string(str):
+    str = str.replace('\\', '\\\\')
+    str = str.replace('"', '\\"')
+    return str
+
 #used
 def generate_fixed_length_assigns(spec, container_gets_allocator, cpp_name_prefix):
     """
     Initialize any fixed-length arrays
-    
+
     @param s: The stream to write to
     @type s: stream
     @param spec: The message spec
@@ -169,7 +174,7 @@ def generate_fixed_length_assigns(spec, container_gets_allocator, cpp_name_prefi
 def generate_initializer_list(spec, container_gets_allocator):
     """
     Writes the initializer list for a constructor
-    
+
     @param s: The stream to write to
     @type s: stream
     @param spec: The message spec
