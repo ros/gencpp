@@ -33,7 +33,7 @@
 #
 
 ## ROS message source code generation for C++
-## 
+##
 ## Converts ROS .msg files in a package into C++ source code implementations.
 
 import sys
@@ -43,4 +43,7 @@ msg_template_map = { 'msg.h.template':'@NAME@.h' }
 srv_template_map = { 'srv.h.template':'@NAME@.h' }
 
 if __name__ == "__main__":
-    genmsg.template_tools.generate_from_command_line_options(sys.argv, msg_template_map, srv_template_map)
+    genmsg.template_tools.generate_from_command_line_options(sys.argv,
+                                                             msg_template_map,
+                                                             srv_template_map)
+

@@ -167,20 +167,40 @@ namespace message_traits
 {
 
 @{
-traits = ['IsMessage']
-if spec.has_header():
-  traits.append('HasHeader')
-}@
-@
+bool_traits = dict(IsMessage=True,
+                   IsFixedSize=gencpp.is_fixed_length(spec, msg_context, search_path),
+                   HasHeader=spec.has_header(),
+                   )
+def booltotype(b):
+   return "TrueType" if b else "FalseType"
+}
+
+// BOOLTRAITS @bool_traits
+// @search_path
+
 @# TODO
+// !!!!!!!!!!! @(dir(spec))
 @#if spec.is_fixed_length():
 @#    traits = traits.append('IsFixedSize')
-@
-@# Binary traits
-@[for trait in traits]@
-template<class ContainerAllocator> struct @(trait)< @(cpp_full_name_with_alloc) > : public TrueType {};
-template<class ContainerAllocator> struct @(trait)< @(cpp_full_name_with_alloc) const> : public TrueType {};
 
+@#template <class ContainerAllocator>
+@#struct IsFixedSize<@(cpp_full_name_with_alloc) >:: @(dir(spec)) ? "TrueType" ! "FalseType") { };
+@#template <class ContainerAllocator>
+@#struct IsFixedSize<@(cpp_full_name_with_alloc) const >:: @(dir(spec)) ? "TrueType" ! "FalseType") { };
+
+@# Binary traits
+
+@[for pr in bool_traits.iteritems()]@
+
+template <class ContainerAllocator>
+struct @(pr[0])< @(cpp_full_name_with_alloc) >
+  : @(booltotype(pr[1]))
+  { };
+
+template <class ContainerAllocator>
+struct @(pr[0])< @(cpp_full_name_with_alloc) const>
+  : @(booltotype(pr[1]))
+  { };
 @[end for]@
 
 @# String traits

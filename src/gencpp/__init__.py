@@ -72,7 +72,7 @@ def cpp_message_declarations(name_prefix, msg):
     return ('%s_'%(cpp_name), '%s_<ContainerAllocator> '%(cpp_name), '%s'%(cpp_name))
 
 #todo
-def is_fixed_length(spec, includepath):
+def is_fixed_length(spec, msg_context, includepath):
     """
     Returns whether or not the message is fixed-length
 
@@ -81,7 +81,6 @@ def is_fixed_length(spec, includepath):
     @param package: The package of the
     @type package: str
     """
-    assert isinstance(includepath, list)
     types = []
     for field in spec.parsed_fields():
         if (field.is_array and field.array_len is None):
@@ -94,10 +93,11 @@ def is_fixed_length(spec, includepath):
             types.append(field.base_type)
 
     types = set(types)
-    for type in types:
-        type = genmsg.msgs.resolve_type(type, spec.package)
-        (_, new_spec) = genmsg.msg_loader.load_msg_by_type(msg_context, type, includepath, spec.package)
-        if (not is_fixed_length(new_spec, includepath)):
+    for t in types:
+        t = genmsg.msgs.resolve_type(t, spec.package)
+        assert isinstance(includepath, dict)
+        new_spec = genmsg.msg_loader.load_msg_by_type(msg_context, t, includepath)
+        if (not is_fixed_length(new_spec, msg_context, includepath)):
             return False
 
     return True
