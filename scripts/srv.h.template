@@ -1,7 +1,7 @@
 @###############################################
 @#
 @# ROS message source code generation for C++
-@# 
+@#
 @# EmPy template for generating <msg>.h files
 @#
 @###############################################
@@ -29,7 +29,7 @@
  *    with the distribution.
  *  * Neither the name of Willow Garage, Inc. nor the names of its
  *    contributors may be used to endorse or promote products derived
- *    from this software without specific prior written permission. 
+ *    from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -49,7 +49,7 @@
  */
 
 @{
-cpp_namespace = '::'+spec.package+'::' # TODO handle nested namespace                                                                   
+cpp_namespace = '::'+spec.package+'::' # TODO handle nested namespace
 cpp_class = spec.short_name
 cpp_full_name = cpp_namespace+cpp_class
 }@
@@ -116,6 +116,10 @@ struct MD5Sum< @(cpp_full_name)Request>
   {
     return ros::message_traits::MD5Sum< @(cpp_full_name)Request>::value();
   }
+  static const char* value(const @(cpp_full_name)Request&)
+  {
+    return value();
+  }
 };
 
 template<>
@@ -124,6 +128,10 @@ struct DataType< @(cpp_full_name)Request>
   static const char* value()
   {
     return ros::message_traits::DataType< @(cpp_full_name)Request>::value();
+  }
+  static const char* value(const @(cpp_full_name)Request&)
+  {
+    return value();
   }
 };
 
@@ -135,6 +143,10 @@ struct MD5Sum< @(cpp_full_name)Response>
   {
     return ros::message_traits::MD5Sum< @(cpp_full_name)Response>::value();
   }
+  static const char* value(const @(cpp_full_name)Response&)
+  {
+    return value();
+  }
 };
 
 template<>
@@ -143,6 +155,10 @@ struct DataType< @(cpp_full_name)Response>
   static const char* value()
   {
     return ros::message_traits::DataType< @(cpp_full_name)Response>::value();
+  }
+  static const char* value(const @(cpp_full_name)Response&)
+  {
+    return value();
   }
 };
 
