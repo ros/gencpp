@@ -7,7 +7,7 @@ if(@PACKAGE_NAME@_SOURCE_DIR)
 else()
   find_program_required(GENCPP_BIN gen_cpp.py
     PATHS @CMAKE_INSTALL_PREFIX@/share/gencpp/bin)
-  set(GENCPP_TEMPLATE_DIR ${CMAKE_INSTALL_PREFIX}/share/gencpp)
+  set(GENCPP_TEMPLATE_DIR @CMAKE_INSTALL_PREFIX@/share/gencpp)
 endif()
 
 # Generate .msg->.h for cpp
