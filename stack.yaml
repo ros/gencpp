@@ -10,7 +10,3 @@ Depends: catkin, genmsg
 Catkin-CopyrightType:  willowgarage
 Catkin-DebRulesType: python_distutils
 Catkin-ROS-Message-Generator: cpp
-
-Release-Pull: git://github.com/wg-debs/gencpp.git
-Release-Push: git@github.com:wg-debs/gencpp.git
-
