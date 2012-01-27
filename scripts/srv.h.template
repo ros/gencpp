@@ -108,13 +108,14 @@ struct @trait_class< @cpp_full_name > {
 };
 @[end for]
 
-// mapping of service_traits to message_traits namespaces for Request and Response
+// service_traits::MD5Sum< @(cpp_full_name)Request> should match 
+// service_traits::MD5Sum< @cpp_full_name > 
 template<>
 struct MD5Sum< @(cpp_full_name)Request>
 {
   static const char* value()
   {
-    return ros::message_traits::MD5Sum< @(cpp_full_name)Request>::value();
+    return MD5Sum< @cpp_full_name >::value();
   }
   static const char* value(const @(cpp_full_name)Request&)
   {
@@ -122,12 +123,14 @@ struct MD5Sum< @(cpp_full_name)Request>
   }
 };
 
+// service_traits::DataType< @(cpp_full_name)Request> should match 
+// service_traits::DataType< @cpp_full_name > 
 template<>
 struct DataType< @(cpp_full_name)Request>
 {
   static const char* value()
   {
-    return ros::message_traits::DataType< @(cpp_full_name)Request>::value();
+    return DataType< @cpp_full_name >::value();
   }
   static const char* value(const @(cpp_full_name)Request&)
   {
@@ -135,13 +138,14 @@ struct DataType< @(cpp_full_name)Request>
   }
 };
 
-// mapping of service_traits to message_traits namespaces for Request and Response
+// service_traits::MD5Sum< @(cpp_full_name)Response> should match 
+// service_traits::MD5Sum< @cpp_full_name > 
 template<>
 struct MD5Sum< @(cpp_full_name)Response>
 {
   static const char* value()
   {
-    return ros::message_traits::MD5Sum< @(cpp_full_name)Response>::value();
+    return MD5Sum< @cpp_full_name >::value();
   }
   static const char* value(const @(cpp_full_name)Response&)
   {
@@ -149,12 +153,14 @@ struct MD5Sum< @(cpp_full_name)Response>
   }
 };
 
+// service_traits::DataType< @(cpp_full_name)Response> should match 
+// service_traits::DataType< @cpp_full_name > 
 template<>
 struct DataType< @(cpp_full_name)Response>
 {
   static const char* value()
   {
-    return ros::message_traits::DataType< @(cpp_full_name)Response>::value();
+    return DataType< @cpp_full_name >::value();
   }
   static const char* value(const @(cpp_full_name)Response&)
   {
