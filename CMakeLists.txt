@@ -6,7 +6,6 @@ add_subdirectory(scripts)
 
 catkin_stack()
 catkin_project(gencpp
-  VERSION 0.0.1
   CFG_EXTRAS gencpp-extras.cmake
   )
 
