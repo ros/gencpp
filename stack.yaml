@@ -1,8 +1,8 @@
 Catkin-ProjectName: gencpp
-Version: 0.2.2
+Version: 0.2.3
 Description: ros message generation, cpp style.
 Author: Troy Straszheim <straszheim@willowgarage.com>, Morten Kjaergaard
-Maintainer: Troy Straszheim <straszheim@willowgarage.com>
+Maintainer: Dirk Thomas <dthomas@willowgarage.com>
 Homepage: http://www.ros.org
 
 Depends: catkin, genmsg
