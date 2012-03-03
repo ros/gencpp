@@ -207,7 +207,7 @@ struct @(pr[0])< @(cpp_full_name_with_alloc) const>
 @[end for]@
 
 @# String traits
-@[for trait_class,trait_value in [['MD5Sum', md5sum], ['DataType', spec.full_name], ['Definition', 'todo']]]@
+@[for trait_class,trait_value in [['MD5Sum', md5sum], ['DataType', spec.full_name], ['Definition', msg_definition]]]@
 
 template<class ContainerAllocator>
 struct @(trait_class)< @(cpp_full_name_with_alloc) >
