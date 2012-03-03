@@ -56,6 +56,7 @@ cpp_namespace = '::%s::'%(spec.package) # TODO handle nested namespace
 cpp_class = '%s_'%spec.short_name
 cpp_full_name = '%s%s'%(cpp_namespace,cpp_class)
 cpp_full_name_with_alloc = '%s<ContainerAllocator>'%(cpp_full_name)
+cpp_msg_definition = gencpp.escape_message_definition(msg_definition)
 }@
 
 #ifndef @(spec.package.upper())_MESSAGE_@(spec.short_name.upper())_H
@@ -207,7 +208,7 @@ struct @(pr[0])< @(cpp_full_name_with_alloc) const>
 @[end for]@
 
 @# String traits
-@[for trait_class,trait_value in [['MD5Sum', md5sum], ['DataType', spec.full_name], ['Definition', msg_definition]]]@
+@[for trait_class,trait_value in [['MD5Sum', md5sum], ['DataType', spec.full_name], ['Definition', cpp_msg_definition]]]@
 
 template<class ContainerAllocator>
 struct @(trait_class)< @(cpp_full_name_with_alloc) >

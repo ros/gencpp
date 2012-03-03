@@ -2,6 +2,11 @@ import genmsg.msgs
 
 __version__ = "1.0"
 
+try:
+    from cStringIO import StringIO #Python 2.x
+except ImportError:
+    from io import StringIO #Python 3.x
+
 MSG_TYPE_TO_CPP = {'byte': 'int8_t',
                    'char': 'uint8_t',
                    'bool': 'uint8_t',
@@ -51,6 +56,22 @@ def msg_type_to_cpp(type):
             return 'boost::array<%s, %s> '%(cpp_type, array_len)
     else:
         return cpp_type
+
+def _escape_string(s):
+    s = s.replace('\\', '\\\\')
+    s = s.replace('"', '\\"')
+    return s
+
+def escape_message_definition(definition):
+    lines = definition.split('\n')
+    s = StringIO()
+    for line in lines:
+        line = _escape_string(line)
+        s.write('%s\\n\\\n'%(line))
+        
+    val = s.getvalue()
+    s.close()
+    return val
 
 #used2
 def cpp_message_declarations(name_prefix, msg):
