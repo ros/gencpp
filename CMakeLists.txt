@@ -14,7 +14,7 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/gencpp
   DESTINATION etc/langs
   )
 
-install(FILES stack.yaml
+install(FILES stack.xml
         DESTINATION share/gencpp)
 
 catkin_python_setup()
