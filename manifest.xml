@@ -1,5 +1,4 @@
 <package>
-  <catkin/>
   <description brief="gencpp">
 
      C++ ROS message and service generators.
