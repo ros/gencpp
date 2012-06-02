@@ -1,7 +1,5 @@
 import genmsg.msgs
 
-__version__ = "1.0"
-
 try:
     from cStringIO import StringIO #Python 2.x
 except ImportError:
