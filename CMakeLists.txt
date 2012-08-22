@@ -9,8 +9,8 @@ catkin_project(gencpp
   CFG_EXTRAS gencpp-extras.cmake
   )
 
-file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/gencpp "C++")
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/gencpp
+file(WRITE ${catkin_BUILD_PREFIX}/etc/langs/gencpp "C++")
+install(FILES ${catkin_BUILD_PREFIX}/etc/langs/gencpp
   DESTINATION etc/langs
   )
 
