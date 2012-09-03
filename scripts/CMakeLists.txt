@@ -1,9 +1,7 @@
 install(
   FILES msg.h.template srv.h.template
-  DESTINATION share/gencpp
-  )
+  DESTINATION ${PROJECT_SHARE_DESTINATION})
 
 install(
   FILES gen_cpp.py
-  DESTINATION share/gencpp/bin
-  )
+  DESTINATION ${PROJECT_LIBEXEC_DESTINATION})
