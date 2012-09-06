@@ -1,4 +1,4 @@
-if(@PKG_BUILDSPACE@)
+if(@BUILDSPACE@)
   find_program_required(GENCPP_BIN gen_cpp.py PATHS ${@PROJECT_NAME@_SOURCE_DIR}/scripts)
   set(GENCPP_TEMPLATE_DIR @CMAKE_CURRENT_SOURCE_DIR@/scripts)
 else()
@@ -45,4 +45,4 @@ endmacro()
 set(gencpp_INSTALL_DIR include)
 
 # make sure we can find buildspace generated messages
-include_directories(${catkin_BUILD_PREFIX}/${gencpp_INSTALL_DIR})
+include_directories(${CATKIN_BUILD_PREFIX}/${gencpp_INSTALL_DIR})
