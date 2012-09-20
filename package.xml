@@ -19,4 +19,6 @@
   <export>
     <rosdoc config="rosdoc.yaml"/>    
   </export>
+
+  <message_generator>cpp</message_generator>
 </package>
