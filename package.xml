@@ -12,6 +12,7 @@
 
   <author>Josh Faust</author>
   <author>Troy Straszheim</author>
+  <author>Morgen Kjaergaard</author>
 
   <build_depend>catkin</build_depend>
   <build_depend>genmsg</build_depend>
