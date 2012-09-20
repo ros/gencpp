@@ -7,5 +7,5 @@ d = parse_package_for_distutils()
 d['packages'] = ['gencpp']
 d['package_dir'] = {'': 'src'}
 d['install_requires'] = ['genmsg']
-d['scripts'] = ['scripts/gencpp.py']
+d['scripts'] = ['scripts/gen_cpp.py']
 setup(**d)
