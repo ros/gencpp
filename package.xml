@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package>
+  <name>gencpp</name>
+  <version>0.4.2</version>
+  <description>C++ ROS message and service generators.</description>
+  <maintainer email="dthomas@willowgarage.com">Dirk Thomas</maintainer>
+
+  <url type="website">http://www.ros.org/wiki/gencpp</url>
+  <url type="bugtracker">https://github.com/ros/gencpp/issues</url>
+  <url type="repository">https://github.com/ros/gencpp</url>
+
+  <author>Josh Faust</author>
+  <author>Troy Straszheim</author>
+  <license>BSD</license>
+
+  <build_depend>catkin</build_depend>
+
+  <export>
+    <rosdoc config="rosdoc.yaml"/>    
+  </export>
+</package>
