@@ -6,7 +6,6 @@
   <maintainer email="dthomas@willowgarage.com">Dirk Thomas</maintainer>
   <license>BSD</license>
 
-  <url type="website">http://www.ros.org/wiki/gencpp</url>
   <url type="bugtracker">https://github.com/ros/gencpp/issues</url>
   <url type="repository">https://github.com/ros/gencpp</url>
 
@@ -16,10 +15,11 @@
 
   <build_depend>catkin</build_depend>
   <build_depend>genmsg</build_depend>
+
   <run_depend>genmsg</run_depend>
 
   <export>
     <message_generator>cpp</message_generator>
-    <rosdoc config="rosdoc.yaml"/>    
+    <rosdoc config="rosdoc.yaml"/>
   </export>
 </package>
