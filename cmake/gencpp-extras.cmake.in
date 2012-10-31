@@ -9,6 +9,7 @@ endif()
 # Generate .msg->.h for cpp
 # The generated .h files should be added ALL_GEN_OUTPUT_FILES_cpp
 macro(_generate_msg_cpp ARG_PKG ARG_MSG ARG_IFLAGS ARG_MSG_DEPS ARG_GEN_OUTPUT_DIR)
+  file(MAKE_DIRECTORY ${ARG_GEN_OUTPUT_DIR})
 
   #Create input and output filenames
   get_filename_component(MSG_NAME ${ARG_MSG} NAME)
@@ -27,9 +28,9 @@ macro(_generate_msg_cpp ARG_PKG ARG_MSG ARG_IFLAGS ARG_MSG_DEPS ARG_GEN_OUTPUT_D
     -e ${GENCPP_TEMPLATE_DIR}
     COMMENT "Generating C++ code from ${ARG_PKG}/${MSG_NAME}"
     )
-
   list(APPEND ALL_GEN_OUTPUT_FILES_cpp ${GEN_OUTPUT_FILE})
 
+  gencpp_append_include_dirs()
 endmacro()
 
 #gencpp uses the same program to generate srv and msg files, so call the same macro
@@ -43,5 +44,12 @@ endmacro()
 
 set(gencpp_INSTALL_DIR include)
 
-# make sure we can find buildspace generated messages
-include_directories(${CATKIN_BUILD_PREFIX}/${gencpp_INSTALL_DIR})
+macro(gencpp_append_include_dirs)
+  if(NOT gencpp_APPENDED_INCLUDE_DIRS)
+    # make sure we can find generated messages and that they overlay all other includes
+    include_directories(BEFORE ${CATKIN_BUILD_PREFIX}/${gencpp_INSTALL_DIR})
+    # pass the include directory to catkin_package()
+    list(APPEND ${PROJECT_NAME}_INCLUDE_DIRS ${CATKIN_BUILD_PREFIX}/${gencpp_INSTALL_DIR})
+    set(gencpp_APPENDED_INCLUDE_DIRS TRUE)
+  endif()
+endmacro()
