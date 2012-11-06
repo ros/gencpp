@@ -1,5 +1,5 @@
-@[if BUILDSPACE]@
-# bin and template dir variables in buildspace
+@[if DEVELSPACE]@
+# bin and template dir variables in develspace
 set(GENCPP_BIN @(CMAKE_CURRENT_SOURCE_DIR)/scripts/gen_cpp.py)
 set(GENCPP_TEMPLATE_DIR @(CMAKE_CURRENT_SOURCE_DIR)/scripts)
 @[else]@
@@ -49,9 +49,9 @@ set(gencpp_INSTALL_DIR include)
 macro(gencpp_append_include_dirs)
   if(NOT gencpp_APPENDED_INCLUDE_DIRS)
     # make sure we can find generated messages and that they overlay all other includes
-    include_directories(BEFORE ${CATKIN_BUILD_PREFIX}/${gencpp_INSTALL_DIR})
+    include_directories(BEFORE ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR})
     # pass the include directory to catkin_package()
-    list(APPEND ${PROJECT_NAME}_INCLUDE_DIRS ${CATKIN_BUILD_PREFIX}/${gencpp_INSTALL_DIR})
+    list(APPEND ${PROJECT_NAME}_INCLUDE_DIRS ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR})
     set(gencpp_APPENDED_INCLUDE_DIRS TRUE)
   endif()
 endmacro()
