@@ -1,11 +1,11 @@
 @[if DEVELSPACE]@
 # bin and template dir variables in develspace
-set(GENCPP_BIN @(CMAKE_CURRENT_SOURCE_DIR)/scripts/gen_cpp.py)
-set(GENCPP_TEMPLATE_DIR @(CMAKE_CURRENT_SOURCE_DIR)/scripts)
+set(GENCPP_BIN "@(CMAKE_CURRENT_SOURCE_DIR)/scripts/gen_cpp.py")
+set(GENCPP_TEMPLATE_DIR "@(CMAKE_CURRENT_SOURCE_DIR)/scripts")
 @[else]@
 # bin and template dir variables in installspace
-set(GENCPP_BIN @(CMAKE_INSTALL_PREFIX)/@(CATKIN_PACKAGE_BIN_DESTINATION)/gen_cpp.py)
-set(GENCPP_TEMPLATE_DIR @(CMAKE_INSTALL_PREFIX)/@(CATKIN_PACKAGE_SHARE_DESTINATION))
+set(GENCPP_BIN "@(CMAKE_INSTALL_PREFIX)/@(CATKIN_PACKAGE_BIN_DESTINATION)/gen_cpp.py")
+set(GENCPP_TEMPLATE_DIR "@(CMAKE_INSTALL_PREFIX)/@(CATKIN_PACKAGE_SHARE_DESTINATION)")
 @[end if]@
 
 # Generate .msg->.h for cpp
