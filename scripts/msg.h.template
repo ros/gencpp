@@ -241,12 +241,17 @@ namespace serialization
 
   template<class ContainerAllocator> struct Serializer< @(cpp_full_name_with_alloc) >
   {
+@[if spec.parsed_fields()]@
     template<typename Stream, typename T> inline static void allInOne(Stream& stream, T m)
     {
 @[for field in spec.parsed_fields()]@
       stream.next(m.@(field.name));
 @[end for]@
     }
+@[else]@
+    template<typename Stream, typename T> inline static void allInOne(Stream&, T)
+    {}
+@[end if]@
 
     ROS_DECLARE_ALLINONE_SERIALIZER;
   }; // struct @(cpp_class)
@@ -264,6 +269,7 @@ namespace message_operations
 template<class ContainerAllocator>
 struct Printer< @(cpp_full_name_with_alloc) >
 {
+@[if spec.parsed_fields()]@
   template<typename Stream> static void stream(Stream& s, const std::string& indent, const @(cpp_full_name_with_alloc)& v)
   {
 @# todo, change this stuff below into proper EmPy syntax
@@ -290,6 +296,10 @@ for field in spec.parsed_fields():
     print '    Printer<%s>::stream(s, indent + "%s", v.%s);'%(cpp_type, indent_increment, field.name)
 }@
   }
+@[else]@
+  template<typename Stream> static void stream(Stream&, const std::string&, const @(cpp_full_name_with_alloc)&)
+  {}
+@[end if]@
 };
 
 } // namespace message_operations
