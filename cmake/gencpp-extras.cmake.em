@@ -22,7 +22,7 @@ macro(_generate_msg_cpp ARG_PKG ARG_MSG ARG_IFLAGS ARG_MSG_DEPS ARG_GEN_OUTPUT_D
 
   assert(CATKIN_ENV)
   add_custom_command(OUTPUT ${GEN_OUTPUT_FILE}
-    DEPENDS ${GENCPP_BIN} ${ARG_MSG} ${ARG_MSG_DEPS}
+    DEPENDS ${GENCPP_BIN} ${ARG_MSG} ${ARG_MSG_DEPS} "${GENCPP_TEMPLATE_DIR}/msg.h.template" ${ARGN}
     COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENCPP_BIN} ${ARG_MSG}
     ${ARG_IFLAGS}
     -p ${ARG_PKG}
@@ -37,7 +37,7 @@ endmacro()
 
 #gencpp uses the same program to generate srv and msg files, so call the same macro
 macro(_generate_srv_cpp ARG_PKG ARG_SRV ARG_IFLAGS ARG_MSG_DEPS ARG_GEN_OUTPUT_DIR)
-  _generate_msg_cpp(${ARG_PKG} ${ARG_SRV} "${ARG_IFLAGS}" "${ARG_MSG_DEPS}" ${ARG_GEN_OUTPUT_DIR})
+  _generate_msg_cpp(${ARG_PKG} ${ARG_SRV} "${ARG_IFLAGS}" "${ARG_MSG_DEPS}" ${ARG_GEN_OUTPUT_DIR} "${GENCPP_TEMPLATE_DIR}/srv.h.template")
 endmacro()
 
 macro(_generate_module_cpp)
