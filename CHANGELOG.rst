@@ -2,6 +2,10 @@
 Changelog for package gencpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.4.14 (2013-08-21)
+-------------------
+* make gencpp relocatable (`ros/catkin#490 <https://github.com/ros/catkin/issues/490>`_)
+
 0.4.13 (2013-06-18)
 -------------------
 * update message targets to depend on template
