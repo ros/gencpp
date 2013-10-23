@@ -82,11 +82,11 @@ cpp_msg_definition = gencpp.escape_message_definition(msg_definition)
 for field in spec.parsed_fields():
   if (not field.is_builtin):
     if (field.is_header):
-      print '#include <std_msgs/Header.h>'
+      print('#include <std_msgs/Header.h>')
     else:
       (package, name) = genmsg.names.package_resource_name(field.base_type)
       package = package or spec.package # convert '' to package
-      print '#include <%s/%s.h>'%(package, name)
+      print('#include <%s/%s.h>'%(package, name))
 }@
 
 namespace @(spec.package)
@@ -194,16 +194,16 @@ def booltotype(b):
 
 @# Binary traits
 
-@[for pr in bool_traits.iteritems()]@
+@[for k, v in bool_traits.items()]@
 
 template <class ContainerAllocator>
-struct @(pr[0])< @(cpp_full_name_with_alloc) >
-  : @(booltotype(pr[1]))
+struct @(k)< @(cpp_full_name_with_alloc) >
+  : @(booltotype(v))
   { };
 
 template <class ContainerAllocator>
-struct @(pr[0])< @(cpp_full_name_with_alloc) const>
-  : @(booltotype(pr[1]))
+struct @(k)< @(cpp_full_name_with_alloc) const>
+  : @(booltotype(v))
   { };
 @[end for]@
 
@@ -221,10 +221,10 @@ struct @(trait_class)< @(cpp_full_name_with_alloc) >
   static const char* value(const @(cpp_full_name_with_alloc)&) { return value(); }
 @{
 if trait_class == 'MD5Sum':
-  iter_count = len(trait_value) / 16
-  for i in xrange(0, iter_count):
+  iter_count = int(len(trait_value) / 16)
+  for i in range(0, iter_count):
     start = i*16
-    print '  static const uint64_t static_value%s = 0x%sULL;'%((i+1), trait_value[start:start+16])
+    print('  static const uint64_t static_value%s = 0x%sULL;'%((i+1), trait_value[start:start+16]))
 }@
 };
 @[end for]@
@@ -277,23 +277,23 @@ struct Printer< @(cpp_full_name_with_alloc) >
 for field in spec.parsed_fields():
   cpp_type = gencpp.msg_type_to_cpp(field.base_type)
   if (field.is_array):
-    print '    s << indent << "%s[]" << std::endl;'%(field.name)
-    print '    for (size_t i = 0; i < v.%s.size(); ++i)'%(field.name)
-    print '    {'
-    print '      s << indent << "  %s[" << i << "]: ";'%(field.name)
+    print('    s << indent << "%s[]" << std::endl;'%(field.name))
+    print('    for (size_t i = 0; i < v.%s.size(); ++i)'%(field.name))
+    print('    {')
+    print('      s << indent << "  %s[" << i << "]: ";'%(field.name))
     indent_increment = '  '
     if (not field.is_builtin):
-      print '      s << std::endl;'
-      print '      s << indent;'
+      print('      s << std::endl;')
+      print('      s << indent;')
       indent_increment = '    ';
-    print '      Printer<%s>::stream(s, indent + "%s", v.%s[i]);'%(cpp_type, indent_increment, field.name)
-    print '    }'
+    print('      Printer<%s>::stream(s, indent + "%s", v.%s[i]);'%(cpp_type, indent_increment, field.name))
+    print('    }')
   else:
-    print '    s << indent << "%s: ";'%(field.name)
+    print('    s << indent << "%s: ";'%(field.name))
     indent_increment = '  '
     if (not field.is_builtin or field.is_array):
-      print '    s << std::endl;'
-    print '    Printer<%s>::stream(s, indent + "%s", v.%s);'%(cpp_type, indent_increment, field.name)
+      print('    s << std::endl;')
+    print('    Printer<%s>::stream(s, indent + "%s", v.%s);'%(cpp_type, indent_increment, field.name))
 }@
   }
 @[else]@
