@@ -128,7 +128,6 @@ struct @(spec.short_name)_
   typedef boost::shared_ptr< @(cpp_full_name)<ContainerAllocator> const> ConstPtr;
 
   ROS_DEPRECATED boost::shared_ptr<std::map<std::string, std::string> > __connection_header;
-
 }; // struct @(cpp_class)
 
 @# Typedef of template instance using std::allocator
