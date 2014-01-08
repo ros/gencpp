@@ -2,8 +2,8 @@
 Changelog for package gencpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.15 (2014-01-07)
+-------------------
 * python 3 compatibility
 * fix generated code of message definition with windows line endings (`#6 <https://github.com/ros/gencpp/issues/6>`_)
 
