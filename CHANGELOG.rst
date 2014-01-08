@@ -2,6 +2,11 @@
 Changelog for package gencpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* python 3 compatibility
+* fix generated code of message definition with windows line endings (`#6 <https://github.com/ros/gencpp/issues/6>`_)
+
 0.4.14 (2013-08-21)
 -------------------
 * make gencpp relocatable (`ros/catkin#490 <https://github.com/ros/catkin/issues/490>`_)
