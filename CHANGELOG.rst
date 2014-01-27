@@ -2,6 +2,10 @@
 Changelog for package gencpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix warning about empty message definition (`ros/ros_comm#344 <https://github.com/ros/ros_comm/issues/344>`_)
+
 0.4.15 (2014-01-07)
 -------------------
 * python 3 compatibility
