@@ -2,8 +2,8 @@
 Changelog for package gencpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.16 (2014-01-27)
+-------------------
 * fix warning about empty message definition (`ros/ros_comm#344 <https://github.com/ros/ros_comm/issues/344>`_)
 
 0.4.15 (2014-01-07)
