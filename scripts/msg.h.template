@@ -125,7 +125,6 @@ struct @(spec.short_name)_
 @# Shared pointer typedefs
   typedef boost::shared_ptr< @(cpp_full_name)<ContainerAllocator> > Ptr;
   typedef boost::shared_ptr< @(cpp_full_name)<ContainerAllocator> const> ConstPtr;
-  boost::shared_ptr<std::map<std::string, std::string> > __connection_header;
 
 }; // struct @(cpp_class)
 
