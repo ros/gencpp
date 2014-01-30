@@ -2,8 +2,8 @@
 Changelog for package gencpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.0 (2014-01-29)
+------------------
 * remove __connection_header from message template (`#3 <https://github.com/ros/gencpp/issues/3>`_)
 
 0.4.16 (2014-01-27)
