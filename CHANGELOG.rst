@@ -2,6 +2,10 @@
 Changelog for package gencpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* remove __connection_header from message template (`#3 <https://github.com/ros/gencpp/issues/3>`_)
+
 0.4.16 (2014-01-27)
 -------------------
 * fix warning about empty message definition (`ros/ros_comm#344 <https://github.com/ros/ros_comm/issues/344>`_)
