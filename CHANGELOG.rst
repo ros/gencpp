@@ -2,8 +2,8 @@
 Changelog for package gencpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.17 (2014-02-25)
+-------------------
 * revert "python 3 compatibility" (introduced in 0.4.15)
 
 0.4.16 (2014-01-27)
