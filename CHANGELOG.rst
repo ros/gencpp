@@ -2,8 +2,8 @@
 Changelog for package gencpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.1 (2014-02-24)
+------------------
 * use catkin_install_python() to install Python scripts (`#18 <https://github.com/ros/gencpp/issues/18>`_)
 * add 'u' suffix to unsigned enum values to avoid compiler warning (`#16 <https://github.com/ros/gencpp/issues/16>`_)
 
