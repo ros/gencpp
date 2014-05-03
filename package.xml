@@ -22,5 +22,6 @@
   <export>
     <message_generator>cpp</message_generator>
     <rosdoc config="rosdoc.yaml"/>
+    <architecture_independent/>
   </export>
 </package>
