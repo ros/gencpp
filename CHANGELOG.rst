@@ -2,6 +2,10 @@
 Changelog for package gencpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add architecture_independent flag in package.xml (`#19 <https://github.com/ros/gencpp/issues/19>`_)
+
 0.5.1 (2014-02-24)
 ------------------
 * use catkin_install_python() to install Python scripts (`#18 <https://github.com/ros/gencpp/issues/18>`_)
