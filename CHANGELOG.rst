@@ -2,6 +2,10 @@
 Changelog for package gencpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* remove copyright header from generated code (`#20 <https://github.com/ros/gencpp/issues/20>`_)
+
 0.5.2 (2014-05-07)
 ------------------
 * add architecture_independent flag in package.xml (`#19 <https://github.com/ros/gencpp/issues/19>`_)
