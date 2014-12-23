@@ -2,8 +2,8 @@
 Changelog for package gencpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.3 (2014-12-22)
+------------------
 * remove copyright header from generated code (`#20 <https://github.com/ros/gencpp/issues/20>`_)
 
 0.5.2 (2014-05-07)
