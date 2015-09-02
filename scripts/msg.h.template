@@ -125,7 +125,7 @@ typedef boost::shared_ptr< @(cpp_namespace+spec.short_name) const> @(spec.short_
 template<typename ContainerAllocator>
 std::ostream& operator<<(std::ostream& s, const @(cpp_full_name_with_alloc) & v)
 {
-ros::message_operations::Printer< @(cpp_full_name_with_alloc) >::stream(s, "", v);
+::ros::message_operations::Printer< @(cpp_full_name_with_alloc) >::stream(s, "", v);
 return s;
 }
 
