@@ -70,6 +70,9 @@ struct @(spec.short_name)_
   @('\n  '.join(gencpp.generate_initializer_list(spec, alloc_name != '' )))@
   {
 @# Fixed length arrays
+@[if alloc_name != '' and not [f for f in spec.parsed_fields() if f.is_array and f.array_len is not None and f.base_type == 'string']]@
+  (void)_alloc;
+@[end if]@
   @('\n  '.join(gencpp.generate_fixed_length_assigns(spec, alloc_name != '', '%s::'%(spec.package))))@
   }
 @[end for]
