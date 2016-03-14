@@ -2,6 +2,10 @@
 Changelog for package gencpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix unused parameter warning (`#24 <https://github.com/ros/gencpp/issues/24>`_)
+
 0.5.3 (2014-12-22)
 ------------------
 * remove copyright header from generated code (`#20 <https://github.com/ros/gencpp/issues/20>`_)
