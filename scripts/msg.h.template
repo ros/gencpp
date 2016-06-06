@@ -224,7 +224,7 @@ namespace serialization
     {}
 @[end if]@
 
-    ROS_DECLARE_ALLINONE_SERIALIZER;
+    ROS_DECLARE_ALLINONE_SERIALIZER
   }; // struct @(cpp_class)
 
 } // namespace serialization
