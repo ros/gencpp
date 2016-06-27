@@ -2,8 +2,8 @@
 Changelog for package gencpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.5 (2016-06-27)
+------------------
 * fix extra semicolon warning (`#26 <https://github.com/ros/gencpp/issues/26>`_)
 
 0.5.4 (2016-03-14)
