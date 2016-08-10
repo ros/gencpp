@@ -1,6 +1,9 @@
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Changelog for package gencpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+0.5.6 (2016-08-10)
+------------------
+* Clarify licensing of generated files (`#27 <https://github.com/ros/gencpp/issues/27>`_)
 
 0.5.5 (2016-06-27)
 ------------------

@@ -4,6 +4,12 @@
   <version>0.5.5</version>
   <description>C++ ROS message and service generators.</description>
   <maintainer email="dthomas@osrfoundation.org">Dirk Thomas</maintainer>
+
+  <!-- 
+       This license only applies to gencpp sources themselves, not to generated
+       files. Generated files have the copyright and license of the input .msg,
+       .srv, or .action files 
+  -->
   <license>BSD</license>
 
   <url type="bugtracker">https://github.com/ros/gencpp/issues</url>
