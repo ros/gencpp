@@ -192,7 +192,6 @@ def booltotype(b):
 }
 
 // BOOLTRAITS @bool_traits
-// @search_path
 
 @# TODO
 // !!!!!!!!!!! @(dir(spec))
