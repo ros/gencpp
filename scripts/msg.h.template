@@ -70,6 +70,7 @@ cpp_msg_definition = gencpp.escape_message_definition(msg_definition)
 #include <vector>
 #include <map>
 
+#include <ros/macros.h>
 #include <ros/types.h>
 #include <ros/serialization.h>
 #include <ros/builtin_message_traits.h>
@@ -125,8 +126,8 @@ struct @(spec.short_name)_
 @# Shared pointer typedefs
   typedef boost::shared_ptr< @(cpp_full_name)<ContainerAllocator> > Ptr;
   typedef boost::shared_ptr< @(cpp_full_name)<ContainerAllocator> const> ConstPtr;
-  boost::shared_ptr<std::map<std::string, std::string> > __connection_header;
 
+  ROS_DEPRECATED boost::shared_ptr<std::map<std::string, std::string> > __connection_header;
 }; // struct @(cpp_class)
 
 @# Typedef of template instance using std::allocator
