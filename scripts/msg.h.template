@@ -55,6 +55,17 @@ for field in spec.parsed_fields():
       package = package or spec.package # convert '' to package
       print('#include <%s/%s.h>'%(package, name))
 }@
+@##############################
+@# Plugins
+@##############################
+@{
+import os;
+if os.path.exists('include/%s/plugin/%s.h'%(spec.package, spec.short_name)):
+  have_plugin = True
+  print('#include <%s/plugin/%s.h>'%(spec.package, spec.short_name));
+else:
+  have_plugin = False
+}@
 
 namespace @(spec.package)
 {
@@ -64,6 +75,9 @@ struct @(spec.short_name)_
   typedef @(spec.short_name)_<ContainerAllocator> Type;
 
 @# constructors (with and without allocator)
+@[if have_plugin]@
+#ifndef @(spec.package.upper())_MESSAGE_@(spec.short_name.upper())_CUSTOM_CONSTRUCTOR
+@[end if]@
 @[for (alloc_type,alloc_name) in [['',''],['const ContainerAllocator& ','_alloc']]]@
   @(spec.short_name)_(@(alloc_type+alloc_name))
 @# Write initializer list
@@ -76,6 +90,11 @@ struct @(spec.short_name)_
   @('\n  '.join(gencpp.generate_fixed_length_assigns(spec, alloc_name != '', '%s::'%(spec.package))))@
   }
 @[end for]
+@[if have_plugin]@
+#else
+  @(spec.package.upper())_MESSAGE_@(spec.short_name.upper())_CUSTOM_CONSTRUCTOR
+#endif
+@[end if]@
 
 @[for field in spec.parsed_fields()]
  @{cpp_type = gencpp.msg_type_to_cpp(field.type)}@
@@ -98,6 +117,12 @@ struct @(spec.short_name)_
   typedef boost::shared_ptr< @(cpp_full_name)<ContainerAllocator> > Ptr;
   typedef boost::shared_ptr< @(cpp_full_name)<ContainerAllocator> const> ConstPtr;
 
+@# Plugins
+@[if have_plugin]@
+#ifdef @(spec.package.upper())_MESSAGE_@(spec.short_name.upper())_PLUGIN
+  @(spec.package.upper())_MESSAGE_@(spec.short_name.upper())_PLUGIN
+#endif
+@[end if]@
 }; // struct @(cpp_class)
 
 @# Typedef of template instance using std::allocator
@@ -210,6 +235,9 @@ namespace ros
 namespace serialization
 {
 
+@[if have_plugin]@
+#ifndef @(spec.package.upper())_MESSAGE_@(spec.short_name.upper())_CUSTOM_SERIALIZER
+@[end if]@
   template<class ContainerAllocator> struct Serializer< @(cpp_full_name_with_alloc) >
   {
 @[if spec.parsed_fields()]@
@@ -226,6 +254,11 @@ namespace serialization
 
     ROS_DECLARE_ALLINONE_SERIALIZER
   }; // struct @(cpp_class)
+@[if have_plugin]@
+#else
+  @(spec.package.upper())_MESSAGE_@(spec.short_name.upper())_CUSTOM_SERIALIZER
+#endif
+@[end if]@
 
 } // namespace serialization
 } // namespace ros
@@ -237,6 +270,9 @@ namespace message_operations
 {
 
 @# Printer operation
+@[if have_plugin]@
+#ifndef @(spec.package.upper())_MESSAGE_@(spec.short_name.upper())_CUSTOM_PRINTER
+@[end if]@
 template<class ContainerAllocator>
 struct Printer< @(cpp_full_name_with_alloc) >
 {
@@ -272,6 +308,11 @@ for field in spec.parsed_fields():
   {}
 @[end if]@
 };
+@[if have_plugin]@
+#else
+  @(spec.package.upper())_MESSAGE_@(spec.short_name.upper())_CUSTOM_PRINTER
+#endif
+@[end if]@
 
 } // namespace message_operations
 } // namespace ros
