@@ -21,7 +21,7 @@ macro(_generate_msg_cpp ARG_PKG ARG_MSG ARG_IFLAGS ARG_MSG_DEPS ARG_GEN_OUTPUT_D
   set(GEN_OUTPUT_FILE ${ARG_GEN_OUTPUT_DIR}/${MSG_GENERATED_NAME})
 
   # check if a user-provided header file exists
-  if(EXISTS ${PROJECT_SOURCE_DIR}/include/${ARG_PKG}/${MSG_SHORT_NAME}.h)
+  if(EXISTS "${PROJECT_SOURCE_DIR}/include/${ARG_PKG}/${MSG_SHORT_NAME}.h")
     # Do nothing. The header will be installed by the user.
   else()
     assert(CATKIN_ENV)

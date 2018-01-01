@@ -18,12 +18,14 @@
 @{
 import genmsg.msgs
 import gencpp
+import os
 
 cpp_namespace = '::%s::'%(spec.package) # TODO handle nested namespace
 cpp_class = '%s_'%spec.short_name
 cpp_full_name = '%s%s'%(cpp_namespace,cpp_class)
 cpp_full_name_with_alloc = '%s<ContainerAllocator>'%(cpp_full_name)
 cpp_msg_definition = gencpp.escape_message_definition(msg_definition)
+has_plugin = os.path.exists('include/%s/plugin/%s.h' % (spec.package, spec.short_name))
 }@
 
 #ifndef @(spec.package.upper())_MESSAGE_@(spec.short_name.upper())_H
@@ -56,16 +58,11 @@ for field in spec.parsed_fields():
       print('#include <%s/%s.h>'%(package, name))
 }@
 @##############################
-@# Plugins
+@# Plugin
 @##############################
-@{
-import os;
-if os.path.exists('include/%s/plugin/%s.h'%(spec.package, spec.short_name)):
-  have_plugin = True
-  print('#include <%s/plugin/%s.h>'%(spec.package, spec.short_name));
-else:
-  have_plugin = False
-}@
+@[if has_plugin]@
+#include <@(spec.package)/plugin/@(spec.short_name).h>
+@[end if]@
 
 namespace @(spec.package)
 {
@@ -75,8 +72,8 @@ struct @(spec.short_name)_
   typedef @(spec.short_name)_<ContainerAllocator> Type;
 
 @# constructors (with and without allocator)
-@[if have_plugin]@
-#ifndef @(spec.package.upper())_MESSAGE_@(spec.short_name.upper())_CUSTOM_CONSTRUCTOR
+@[if has_plugin]@
+#ifndef @(spec.package.upper())_MESSAGE_@(spec.short_name.upper())_PLUGIN_CONSTRUCTOR
 @[end if]@
 @[for (alloc_type,alloc_name) in [['',''],['const ContainerAllocator& ','_alloc']]]@
   @(spec.short_name)_(@(alloc_type+alloc_name))
@@ -90,9 +87,9 @@ struct @(spec.short_name)_
   @('\n  '.join(gencpp.generate_fixed_length_assigns(spec, alloc_name != '', '%s::'%(spec.package))))@
   }
 @[end for]
-@[if have_plugin]@
+@[if has_plugin]@
 #else
-  @(spec.package.upper())_MESSAGE_@(spec.short_name.upper())_CUSTOM_CONSTRUCTOR
+  @(spec.package.upper())_MESSAGE_@(spec.short_name.upper())_PLUGIN_CONSTRUCTOR
 #endif
 @[end if]@
 
@@ -117,10 +114,10 @@ struct @(spec.short_name)_
   typedef boost::shared_ptr< @(cpp_full_name)<ContainerAllocator> > Ptr;
   typedef boost::shared_ptr< @(cpp_full_name)<ContainerAllocator> const> ConstPtr;
 
-@# Plugins
-@[if have_plugin]@
-#ifdef @(spec.package.upper())_MESSAGE_@(spec.short_name.upper())_PLUGIN
-  @(spec.package.upper())_MESSAGE_@(spec.short_name.upper())_PLUGIN
+@# Class body extensions provided by plugin
+@[if has_plugin]@
+#ifdef @(spec.package.upper())_MESSAGE_@(spec.short_name.upper())_PLUGIN_CLASS_BODY
+  @(spec.package.upper())_MESSAGE_@(spec.short_name.upper())_PLUGIN_CLASS_BODY
 #endif
 @[end if]@
 }; // struct @(cpp_class)
@@ -235,8 +232,8 @@ namespace ros
 namespace serialization
 {
 
-@[if have_plugin]@
-#ifndef @(spec.package.upper())_MESSAGE_@(spec.short_name.upper())_CUSTOM_SERIALIZER
+@[if has_plugin]@
+#ifndef @(spec.package.upper())_MESSAGE_@(spec.short_name.upper())_PLUGIN_SERIALIZER
 @[end if]@
   template<class ContainerAllocator> struct Serializer< @(cpp_full_name_with_alloc) >
   {
@@ -254,9 +251,9 @@ namespace serialization
 
     ROS_DECLARE_ALLINONE_SERIALIZER
   }; // struct @(cpp_class)
-@[if have_plugin]@
+@[if has_plugin]@
 #else
-  @(spec.package.upper())_MESSAGE_@(spec.short_name.upper())_CUSTOM_SERIALIZER
+  @(spec.package.upper())_MESSAGE_@(spec.short_name.upper())_PLUGIN_SERIALIZER
 #endif
 @[end if]@
 
@@ -270,8 +267,8 @@ namespace message_operations
 {
 
 @# Printer operation
-@[if have_plugin]@
-#ifndef @(spec.package.upper())_MESSAGE_@(spec.short_name.upper())_CUSTOM_PRINTER
+@[if has_plugin]@
+#ifndef @(spec.package.upper())_MESSAGE_@(spec.short_name.upper())_PLUGIN_PRINTER
 @[end if]@
 template<class ContainerAllocator>
 struct Printer< @(cpp_full_name_with_alloc) >
@@ -308,9 +305,9 @@ for field in spec.parsed_fields():
   {}
 @[end if]@
 };
-@[if have_plugin]@
+@[if has_plugin]@
 #else
-  @(spec.package.upper())_MESSAGE_@(spec.short_name.upper())_CUSTOM_PRINTER
+  @(spec.package.upper())_MESSAGE_@(spec.short_name.upper())_PLUGIN_PRINTER
 #endif
 @[end if]@
 
