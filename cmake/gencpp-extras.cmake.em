@@ -20,17 +20,34 @@ macro(_generate_msg_cpp ARG_PKG ARG_MSG ARG_IFLAGS ARG_MSG_DEPS ARG_GEN_OUTPUT_D
   set(MSG_GENERATED_NAME ${MSG_SHORT_NAME}.h)
   set(GEN_OUTPUT_FILE ${ARG_GEN_OUTPUT_DIR}/${MSG_GENERATED_NAME})
 
-  assert(CATKIN_ENV)
-  add_custom_command(OUTPUT ${GEN_OUTPUT_FILE}
-    DEPENDS ${GENCPP_BIN} ${ARG_MSG} ${ARG_MSG_DEPS} "${GENCPP_TEMPLATE_DIR}/msg.h.template" ${ARGN}
-    COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENCPP_BIN} ${ARG_MSG}
-    ${ARG_IFLAGS}
-    -p ${ARG_PKG}
-    -o ${ARG_GEN_OUTPUT_DIR}
-    -e ${GENCPP_TEMPLATE_DIR}
-    COMMENT "Generating C++ code from ${ARG_PKG}/${MSG_NAME}"
-    )
-  list(APPEND ALL_GEN_OUTPUT_FILES_cpp ${GEN_OUTPUT_FILE})
+  # check if a user-provided header file exists
+  if(EXISTS "${PROJECT_SOURCE_DIR}/include/${ARG_PKG}/${MSG_SHORT_NAME}.h")
+    message(STATUS "${ARG_PKG}: Found user-provided header '${PROJECT_SOURCE_DIR}/include/${ARG_PKG}/${MSG_SHORT_NAME}.h' for message '${ARG_PKG}/${MSG_SHORT_NAME}'. Skipping generation...")
+    # Do nothing. The header will be installed by the user.
+  else()
+    # check if a user-provided plugin header file exists
+    if(EXISTS "${PROJECT_SOURCE_DIR}/include/${ARG_PKG}/plugin/${MSG_SHORT_NAME}.h")
+      message(STATUS "${ARG_PKG}: Found user-provided plugin header '${PROJECT_SOURCE_DIR}/include/${ARG_PKG}/plugin/${MSG_SHORT_NAME}.h' for message '${ARG_PKG}/${MSG_SHORT_NAME}'.")
+      # Add a file dependency to enforce regeneration if the plugin header was added after initial cmake invocation.
+      # Even with --force-cmake the generator would otherwise not run if the .msg file did not change.
+      set(MSG_PLUGIN "${PROJECT_SOURCE_DIR}/include/${ARG_PKG}/plugin/${MSG_SHORT_NAME}.h")
+    else()
+      set(MSG_PLUGIN)
+    endif()
+
+    assert(CATKIN_ENV)
+    add_custom_command(OUTPUT ${GEN_OUTPUT_FILE}
+      DEPENDS ${GENCPP_BIN} ${ARG_MSG} ${ARG_MSG_DEPS} ${MSG_PLUGIN} "${GENCPP_TEMPLATE_DIR}/msg.h.template" ${ARGN}
+      COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENCPP_BIN} ${ARG_MSG}
+      ${ARG_IFLAGS}
+      -p ${ARG_PKG}
+      -o ${ARG_GEN_OUTPUT_DIR}
+      -e ${GENCPP_TEMPLATE_DIR}
+      COMMENT "Generating C++ code from ${ARG_PKG}/${MSG_NAME}"
+      WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+      )
+    list(APPEND ALL_GEN_OUTPUT_FILES_cpp ${GEN_OUTPUT_FILE})
+  endif()
 
   gencpp_append_include_dirs()
 endmacro()
