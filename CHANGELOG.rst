@@ -2,8 +2,8 @@
 Changelog for package gencpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.6.0 (2018-01-29)
+------------------
 * add plugin support for generated C++ message headers (`#32 <https://github.com/ros/gencpp/pull/32>`_)
 * put all the message integer constants into a common enum (`#25 <https://github.com/ros/gencpp/issues/25>`_)
 
