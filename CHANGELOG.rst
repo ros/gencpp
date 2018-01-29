@@ -2,6 +2,11 @@
 Changelog for package gencpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add plugin support for generated C++ message headers (`#32 <https://github.com/ros/gencpp/pull/32>`_)
+* put all the message integer constants into a common enum (`#25 <https://github.com/ros/gencpp/issues/25>`_)
+
 0.5.5 (2016-06-27)
 ------------------
 * fix extra semicolon warning (`#26 <https://github.com/ros/gencpp/issues/26>`_)
