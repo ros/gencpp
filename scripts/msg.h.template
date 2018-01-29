@@ -73,7 +73,9 @@ struct @(spec.short_name)_
 
 @# constructors (with and without allocator)
 @[if has_plugin]@
-#ifndef @(spec.package.upper())_MESSAGE_@(spec.short_name.upper())_PLUGIN_CONSTRUCTOR
+#ifdef @(spec.package.upper())_MESSAGE_@(spec.short_name.upper())_PLUGIN_CONSTRUCTOR
+  @(spec.package.upper())_MESSAGE_@(spec.short_name.upper())_PLUGIN_CONSTRUCTOR
+#else
 @[end if]@
 @[for (alloc_type,alloc_name) in [['',''],['const ContainerAllocator& ','_alloc']]]@
   @(spec.short_name)_(@(alloc_type+alloc_name))
@@ -88,8 +90,6 @@ struct @(spec.short_name)_
   }
 @[end for]
 @[if has_plugin]@
-#else
-  @(spec.package.upper())_MESSAGE_@(spec.short_name.upper())_PLUGIN_CONSTRUCTOR
 #endif
 @[end if]@
 
@@ -233,7 +233,9 @@ namespace serialization
 {
 
 @[if has_plugin]@
-#ifndef @(spec.package.upper())_MESSAGE_@(spec.short_name.upper())_PLUGIN_SERIALIZER
+#ifdef @(spec.package.upper())_MESSAGE_@(spec.short_name.upper())_PLUGIN_SERIALIZER
+  @(spec.package.upper())_MESSAGE_@(spec.short_name.upper())_PLUGIN_SERIALIZER
+#else
 @[end if]@
   template<class ContainerAllocator> struct Serializer< @(cpp_full_name_with_alloc) >
   {
@@ -252,8 +254,6 @@ namespace serialization
     ROS_DECLARE_ALLINONE_SERIALIZER
   }; // struct @(cpp_class)
 @[if has_plugin]@
-#else
-  @(spec.package.upper())_MESSAGE_@(spec.short_name.upper())_PLUGIN_SERIALIZER
 #endif
 @[end if]@
 
@@ -268,7 +268,9 @@ namespace message_operations
 
 @# Printer operation
 @[if has_plugin]@
-#ifndef @(spec.package.upper())_MESSAGE_@(spec.short_name.upper())_PLUGIN_PRINTER
+#ifdef @(spec.package.upper())_MESSAGE_@(spec.short_name.upper())_PLUGIN_PRINTER
+  @(spec.package.upper())_MESSAGE_@(spec.short_name.upper())_PLUGIN_PRINTER
+#else
 @[end if]@
 template<class ContainerAllocator>
 struct Printer< @(cpp_full_name_with_alloc) >
@@ -306,8 +308,6 @@ for field in spec.parsed_fields():
 @[end if]@
 };
 @[if has_plugin]@
-#else
-  @(spec.package.upper())_MESSAGE_@(spec.short_name.upper())_PLUGIN_PRINTER
 #endif
 @[end if]@
 
