@@ -10,7 +10,7 @@ set(GENCPP_TEMPLATE_DIR "${gencpp_DIR}/..")
 
 # Generate .msg->.h for cpp
 # The generated .h files should be added ALL_GEN_OUTPUT_FILES_cpp
-macro(_generate_msg_cpp ARG_PKG ARG_MSG ARG_IFLAGS ARG_MSG_DEPS ARG_GEN_OUTPUT_DIR)
+macro(_generate_msg_cpp ARG_PKG ARG_MSG ARG_IFLAGS ARG_MSG_DEPS ARG_GEN_OUTPUT_DIR ARG_IS_DEPRECATED)
   file(MAKE_DIRECTORY ${ARG_GEN_OUTPUT_DIR})
 
   #Create input and output filenames
@@ -35,6 +35,10 @@ macro(_generate_msg_cpp ARG_PKG ARG_MSG ARG_IFLAGS ARG_MSG_DEPS ARG_GEN_OUTPUT_D
       set(MSG_PLUGIN)
     endif()
 
+    if(${ARG_IS_DEPRECATED})
+      set(COMMAND_DEPRECATED_FLAG "-d")
+    endif()
+
     assert(CATKIN_ENV)
     add_custom_command(OUTPUT ${GEN_OUTPUT_FILE}
       DEPENDS ${GENCPP_BIN} ${ARG_MSG} ${ARG_MSG_DEPS} ${MSG_PLUGIN} "${GENCPP_TEMPLATE_DIR}/msg.h.template" ${ARGN}
@@ -43,6 +47,7 @@ macro(_generate_msg_cpp ARG_PKG ARG_MSG ARG_IFLAGS ARG_MSG_DEPS ARG_GEN_OUTPUT_D
       -p ${ARG_PKG}
       -o ${ARG_GEN_OUTPUT_DIR}
       -e ${GENCPP_TEMPLATE_DIR}
+      ${COMMAND_DEPRECATED_FLAG}
       COMMENT "Generating C++ code from ${ARG_PKG}/${MSG_NAME}"
       WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
       )
@@ -53,8 +58,8 @@ macro(_generate_msg_cpp ARG_PKG ARG_MSG ARG_IFLAGS ARG_MSG_DEPS ARG_GEN_OUTPUT_D
 endmacro()
 
 #gencpp uses the same program to generate srv and msg files, so call the same macro
-macro(_generate_srv_cpp ARG_PKG ARG_SRV ARG_IFLAGS ARG_MSG_DEPS ARG_GEN_OUTPUT_DIR)
-  _generate_msg_cpp(${ARG_PKG} ${ARG_SRV} "${ARG_IFLAGS}" "${ARG_MSG_DEPS}" ${ARG_GEN_OUTPUT_DIR} "${GENCPP_TEMPLATE_DIR}/srv.h.template")
+macro(_generate_srv_cpp ARG_PKG ARG_SRV ARG_IFLAGS ARG_MSG_DEPS ARG_GEN_OUTPUT_DIR ARG_IS_DEPRECATED)
+  _generate_msg_cpp(${ARG_PKG} ${ARG_SRV} "${ARG_IFLAGS}" "${ARG_MSG_DEPS}" ${ARG_GEN_OUTPUT_DIR} ${ARG_IS_DEPRECATED} "${GENCPP_TEMPLATE_DIR}/srv.h.template")
 endmacro()
 
 macro(_generate_module_cpp)
