@@ -226,7 +226,7 @@ struct @(trait_class)< @(cpp_full_name_with_alloc) >
 {
   static const char* value()
   {
-    return "@(trait_value)";
+    return @(trait_value);
   }
 
   static const char* value(const @(cpp_full_name_with_alloc)&) { return value(); }
