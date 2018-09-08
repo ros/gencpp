@@ -99,7 +99,7 @@ def escape_message_definition(definition):
     s = StringIO()
     for line in lines:
         line = _escape_string(line)
-        s.write('%s\\n\\\n'%(line))
+        s.write('"%s\\n"\n'%(line))
         
     val = s.getvalue()
     s.close()
