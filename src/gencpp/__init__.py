@@ -99,6 +99,8 @@ def escape_message_definition(definition):
     s = StringIO()
     for line in lines:
         line = _escape_string(line)
+        # individual string literals cannot be too long; need to utilize string concatenation for long strings
+        # https://docs.microsoft.com/en-us/cpp/c-language/maximum-string-length?view=vs-2017
         s.write('"%s\\n"\n'%(line))
         
     val = s.getvalue()
