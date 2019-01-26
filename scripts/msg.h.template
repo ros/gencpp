@@ -226,7 +226,11 @@ struct @(trait_class)< @(cpp_full_name_with_alloc) >
 {
   static const char* value()
   {
+@[if trait_class == 'Definition']@
+    return @(trait_value);
+@[else]@
     return "@(trait_value)";
+@[end if]@
   }
 
   static const char* value(const @(cpp_full_name_with_alloc)&) { return value(); }
