@@ -2,8 +2,8 @@
 Changelog for package gencpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.6.1 (2019-03-04)
+------------------
 * enable Windows build (`#38 <https://github.com/ros/gencpp/issues/38>`_)
 
 0.6.0 (2018-01-29)
