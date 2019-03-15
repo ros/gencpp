@@ -340,6 +340,6 @@ for field in spec.parsed_fields():
 @# Free function extensions provided by plugin
 @[if has_plugin_after]@
 #include <@(spec.package)/plugin/@(spec.short_name).after.h>
-@[end if]@
 
+@[end if]@
 #endif // @(spec.package.upper())_MESSAGE_@(spec.short_name.upper())_H
