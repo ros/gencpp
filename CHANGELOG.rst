@@ -2,8 +2,8 @@
 Changelog for package gencpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.6.2 (2019-03-18)
+------------------
 * add plugins the ability to also generate free functions (`#40 <https://github.com/ros/gencpp/issues/40>`_)
 
 0.6.1 (2019-03-04)
