@@ -2,6 +2,10 @@
 Changelog for package gencpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add plugins the ability to also generate free functions (`#40 <https://github.com/ros/gencpp/issues/40>`_)
+
 0.6.1 (2019-03-04)
 ------------------
 * enable Windows build (`#38 <https://github.com/ros/gencpp/issues/38>`_)
