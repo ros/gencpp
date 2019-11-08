@@ -19,6 +19,7 @@
 import genmsg.msgs
 import gencpp
 import os
+from collections import OrderedDict
 
 cpp_namespace = '::%s::'%(spec.package) # TODO handle nested namespace
 cpp_class = '%s_'%spec.short_name
@@ -183,7 +184,7 @@ namespace message_traits
 {
 
 @{
-bool_traits = dict(IsMessage=True,
+bool_traits = OrderedDict(IsMessage=True,
                    IsFixedSize=gencpp.is_fixed_length(spec, msg_context, search_path),
                    HasHeader=spec.has_header(),
                    )
@@ -194,14 +195,14 @@ def booltotype(b):
 // BOOLTRAITS @bool_traits
 
 @# TODO
-// !!!!!!!!!!! @(dir(spec))
+// !!!!!!!!!!! @(sorted(dir(spec)))
 @#if spec.is_fixed_length():
 @#    traits = traits.append('IsFixedSize')
 
 @#template <class ContainerAllocator>
-@#struct IsFixedSize<@(cpp_full_name_with_alloc) >:: @(dir(spec)) ? "TrueType" ! "FalseType") { };
+@#struct IsFixedSize<@(cpp_full_name_with_alloc) >:: @(sorted(dir(spec))) ? "TrueType" ! "FalseType") { };
 @#template <class ContainerAllocator>
-@#struct IsFixedSize<@(cpp_full_name_with_alloc) const >:: @(dir(spec)) ? "TrueType" ! "FalseType") { };
+@#struct IsFixedSize<@(cpp_full_name_with_alloc) const >:: @(sorted(dir(spec))) ? "TrueType" ! "FalseType") { };
 
 @# Binary traits
 
