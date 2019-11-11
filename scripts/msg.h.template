@@ -184,10 +184,11 @@ namespace message_traits
 {
 
 @{
-bool_traits = OrderedDict(IsMessage=True,
-                   IsFixedSize=gencpp.is_fixed_length(spec, msg_context, search_path),
-                   HasHeader=spec.has_header(),
-                   )
+bool_traits = OrderedDict(
+    IsMessage=True,
+    IsFixedSize=gencpp.is_fixed_length(spec, msg_context, search_path),
+    HasHeader=spec.has_header(),
+)
 def booltotype(b):
    return "TrueType" if b else "FalseType"
 }
