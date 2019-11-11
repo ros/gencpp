@@ -193,18 +193,6 @@ def booltotype(b):
    return "TrueType" if b else "FalseType"
 }
 
-// BOOLTRAITS @bool_traits
-
-@# TODO
-// !!!!!!!!!!! @(sorted(dir(spec)))
-@#if spec.is_fixed_length():
-@#    traits = traits.append('IsFixedSize')
-
-@#template <class ContainerAllocator>
-@#struct IsFixedSize<@(cpp_full_name_with_alloc) >:: @(sorted(dir(spec))) ? "TrueType" ! "FalseType") { };
-@#template <class ContainerAllocator>
-@#struct IsFixedSize<@(cpp_full_name_with_alloc) const >:: @(sorted(dir(spec))) ? "TrueType" ! "FalseType") { };
-
 @# Binary traits
 
 @[for k, v in bool_traits.items()]@
