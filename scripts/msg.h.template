@@ -16,10 +16,10 @@
 // DO NOT EDIT!
 
 @{
+from collections import OrderedDict
 import genmsg.msgs
 import gencpp
 import os
-from collections import OrderedDict
 
 cpp_namespace = '::%s::'%(spec.package) # TODO handle nested namespace
 cpp_class = '%s_'%spec.short_name
