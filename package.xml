@@ -1,5 +1,8 @@
 <?xml version="1.0"?>
-<package>
+<?xml-model
+  href="http://download.ros.org/schema/package_format3.xsd"
+  schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
   <name>gencpp</name>
   <version>0.6.2</version>
   <description>C++ ROS message and service generators.</description>
@@ -19,7 +22,7 @@
 
   <build_depend>genmsg</build_depend>
 
-  <run_depend>genmsg</run_depend>
+  <exec_depend>genmsg</exec_depend>
 
   <export>
     <message_generator>cpp</message_generator>
