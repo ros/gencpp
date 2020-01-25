@@ -75,8 +75,8 @@ struct @trait_class< @cpp_full_name > {
 };
 @[end for]
 
-// service_traits::MD5Sum< @(cpp_full_name)Request> should match 
-// service_traits::MD5Sum< @cpp_full_name > 
+// service_traits::MD5Sum< @(cpp_full_name)Request> should match
+// service_traits::MD5Sum< @cpp_full_name >
 template<>
 struct MD5Sum< @(cpp_full_name)Request>
 {
@@ -90,8 +90,8 @@ struct MD5Sum< @(cpp_full_name)Request>
   }
 };
 
-// service_traits::DataType< @(cpp_full_name)Request> should match 
-// service_traits::DataType< @cpp_full_name > 
+// service_traits::DataType< @(cpp_full_name)Request> should match
+// service_traits::DataType< @cpp_full_name >
 template<>
 struct DataType< @(cpp_full_name)Request>
 {
@@ -105,8 +105,8 @@ struct DataType< @(cpp_full_name)Request>
   }
 };
 
-// service_traits::MD5Sum< @(cpp_full_name)Response> should match 
-// service_traits::MD5Sum< @cpp_full_name > 
+// service_traits::MD5Sum< @(cpp_full_name)Response> should match
+// service_traits::MD5Sum< @cpp_full_name >
 template<>
 struct MD5Sum< @(cpp_full_name)Response>
 {
@@ -120,8 +120,8 @@ struct MD5Sum< @(cpp_full_name)Response>
   }
 };
 
-// service_traits::DataType< @(cpp_full_name)Response> should match 
-// service_traits::DataType< @cpp_full_name > 
+// service_traits::DataType< @(cpp_full_name)Response> should match
+// service_traits::DataType< @cpp_full_name >
 template<>
 struct DataType< @(cpp_full_name)Response>
 {

@@ -33,39 +33,44 @@
 import genmsg.msgs
 
 try:
-    from cStringIO import StringIO #Python 2.x
+    from cStringIO import StringIO  # Python 2.x
 except ImportError:
-    from io import StringIO #Python 3.x
+    from io import StringIO  # Python 3.x
 
-MSG_TYPE_TO_CPP = {'byte': 'int8_t',
-                   'char': 'uint8_t',
-                   'bool': 'uint8_t',
-                   'uint8': 'uint8_t',
-                   'int8': 'int8_t',
-                   'uint16': 'uint16_t',
-                   'int16': 'int16_t',
-                   'uint32': 'uint32_t',
-                   'int32': 'int32_t',
-                   'uint64': 'uint64_t',
-                    'int64': 'int64_t',
-                   'float32': 'float',
-                   'float64': 'double',
-                   'string': 'std::basic_string<char, std::char_traits<char>, typename ContainerAllocator::template rebind<char>::other > ',
-                   'time': 'ros::Time',
-                   'duration': 'ros::Duration'}
+MSG_TYPE_TO_CPP = {
+    'byte': 'int8_t',
+    'char': 'uint8_t',
+    'bool': 'uint8_t',
+    'uint8': 'uint8_t',
+    'int8': 'int8_t',
+    'uint16': 'uint16_t',
+    'int16': 'int16_t',
+    'uint32': 'uint32_t',
+    'int32': 'int32_t',
+    'uint64': 'uint64_t',
+    'int64': 'int64_t',
+    'float32': 'float',
+    'float64': 'double',
+    'string': 'std::basic_string<char, std::char_traits<char>, typename ContainerAllocator::template rebind<char>::other > ',
+    'time': 'ros::Time',
+    'duration': 'ros::Duration',
+}
 
-#used
-def msg_type_to_cpp(type):
+
+# used
+def msg_type_to_cpp(type_):
     """
-    Converts a message type (e.g. uint32, std_msgs/String, etc.) into the C++ declaration
-    for that type (e.g. uint32_t, std_msgs::String_<ContainerAllocator>)
+    Convert a message type into the C++ declaration for that type.
 
-    @param type: The message type
-    @type type: str
+    Example message types: uint32, std_msgs/String.
+    Example C++ types: uint32_t, std_msgs::String_<ContainerAllocator>
+
+    @param type_: The message type
+    @type type_: str
     @return: The C++ declaration
     @rtype: str
     """
-    (base_type, is_array, array_len) = genmsg.msgs.parse_type(type)
+    (base_type, is_array, array_len) = genmsg.msgs.parse_type(type_)
     cpp_type = None
     if (genmsg.msgs.is_builtin(base_type)):
         cpp_type = MSG_TYPE_TO_CPP[base_type]
@@ -73,24 +78,26 @@ def msg_type_to_cpp(type):
         if (genmsg.msgs.is_header_type(base_type)):
             cpp_type = ' ::std_msgs::Header_<ContainerAllocator> '
         else:
-            cpp_type = '%s_<ContainerAllocator> '%(base_type)
+            cpp_type = '%s_<ContainerAllocator> ' % (base_type)
     else:
         pkg = base_type.split('/')[0]
         msg = base_type.split('/')[1]
-        cpp_type = ' ::%s::%s_<ContainerAllocator> '%(pkg, msg)
+        cpp_type = ' ::%s::%s_<ContainerAllocator> ' % (pkg, msg)
 
     if (is_array):
         if (array_len is None):
-            return 'std::vector<%s, typename ContainerAllocator::template rebind<%s>::other > '%(cpp_type, cpp_type)
+            return 'std::vector<%s, typename ContainerAllocator::template rebind<%s>::other > ' % (cpp_type, cpp_type)
         else:
-            return 'boost::array<%s, %s> '%(cpp_type, array_len)
+            return 'boost::array<%s, %s> ' % (cpp_type, array_len)
     else:
         return cpp_type
+
 
 def _escape_string(s):
     s = s.replace('\\', '\\\\')
     s = s.replace('"', '\\"')
     return s
+
 
 def escape_message_definition(definition):
     lines = definition.splitlines()
@@ -101,16 +108,17 @@ def escape_message_definition(definition):
         line = _escape_string(line)
         # individual string literals cannot be too long; need to utilize string concatenation for long strings
         # https://docs.microsoft.com/en-us/cpp/c-language/maximum-string-length?view=vs-2017
-        s.write('"%s\\n"\n'%(line))
-        
+        s.write('"%s\\n"\n' % (line))
+
     val = s.getvalue()
     s.close()
     return val
 
-#used2
+
+# used2
 def cpp_message_declarations(name_prefix, msg):
     """
-    Returns the different possible C++ declarations for a message given the message itself.
+    Return the different possible C++ declarations for a message given the message itself.
 
     @param name_prefix: The C++ prefix to be prepended to the name, e.g. "std_msgs::"
     @type name_prefix: str
@@ -121,15 +129,16 @@ def cpp_message_declarations(name_prefix, msg):
     @rtype: str
     """
     pkg, basetype = genmsg.names.package_resource_name(msg)
-    cpp_name = ' ::%s%s'%(name_prefix, msg)
+    cpp_name = ' ::%s%s' % (name_prefix, msg)
     if (pkg):
-        cpp_name = ' ::%s::%s'%(pkg, basetype)
-    return ('%s_'%(cpp_name), '%s_<ContainerAllocator> '%(cpp_name), '%s'%(cpp_name))
+        cpp_name = ' ::%s::%s' % (pkg, basetype)
+    return ('%s_' % (cpp_name), '%s_<ContainerAllocator> ' % (cpp_name), '%s' % (cpp_name))
 
-#todo
+
+# todo
 def is_fixed_length(spec, msg_context, includepath):
     """
-    Returns whether or not the message is fixed-length
+    Return whether or not the message is fixed-length.
 
     @param spec: The message spec
     @type spec: genmsg.msgs.MsgSpec
@@ -157,46 +166,58 @@ def is_fixed_length(spec, msg_context, includepath):
 
     return True
 
-#used2
-def default_value(type):
+
+# used2
+def default_value(type_):
     """
-    Returns the value to initialize a message member with.  0 for integer types, 0.0 for floating point, false for bool,
+    Return the value to initialize a message member with.
+
+    0 for integer types, 0.0 for floating point, false for bool,
     empty string for everything else
 
-    @param type: The type
-    @type type: str
+    @param type_: The type
+    @type type_: str
     """
-    if type in ['byte', 'int8', 'int16', 'int32', 'int64',
-                'char', 'uint8', 'uint16', 'uint32', 'uint64']:
+    if type_ in [
+        'byte', 'int8', 'int16', 'int32', 'int64',
+        'char', 'uint8', 'uint16', 'uint32', 'uint64',
+    ]:
         return '0'
-    elif type in ['float32', 'float64']:
+    elif type_ in ['float32', 'float64']:
         return '0.0'
-    elif type == 'bool':
+    elif type_ == 'bool':
         return 'false'
 
-    return ""
-#used2
-def takes_allocator(type):
+    return ''
+
+
+# used2
+def takes_allocator(type_):
     """
-    Returns whether or not a type can take an allocator in its constructor.  False for all builtin types except string.
+    Return whether or not a type can take an allocator in its constructor.
+
+    False for all builtin types except string.
     True for all others.
 
-    @param type: The type
+    @param type_: The type
     @type: str
     """
-    return not type in ['byte', 'int8', 'int16', 'int32', 'int64',
-                        'char', 'uint8', 'uint16', 'uint32', 'uint64',
-                        'float32', 'float64', 'bool', 'time', 'duration']
+    return type_ not in [
+        'byte', 'int8', 'int16', 'int32', 'int64',
+        'char', 'uint8', 'uint16', 'uint32', 'uint64',
+        'float32', 'float64', 'bool', 'time', 'duration']
 
-def escape_string(str):
-    str = str.replace('\\', '\\\\')
-    str = str.replace('"', '\\"')
-    return str
 
-#used
+def escape_string(str_):
+    str_ = str_.replace('\\', '\\\\')
+    str_ = str_.replace('"', '\\"')
+    return str_
+
+
+# used
 def generate_fixed_length_assigns(spec, container_gets_allocator, cpp_name_prefix):
     """
-    Initialize any fixed-length arrays
+    Initialize any fixed-length arrays.
 
     @param s: The stream to write to
     @type s: stream
@@ -216,19 +237,20 @@ def generate_fixed_length_assigns(spec, container_gets_allocator, cpp_name_prefi
         val = default_value(field.base_type)
         if (container_gets_allocator and takes_allocator(field.base_type)):
             # String is a special case, as it is the only builtin type that takes an allocator
-            if (field.base_type == "string"):
-                string_cpp = msg_type_to_cpp("string")
-                yield '    %s.assign(%s(_alloc));\n'%(field.name, string_cpp)
+            if (field.base_type == 'string'):
+                string_cpp = msg_type_to_cpp('string')
+                yield '    %s.assign(%s(_alloc));\n' % (field.name, string_cpp)
             else:
                 (cpp_msg_unqualified, cpp_msg_with_alloc, _) = cpp_message_declarations(cpp_name_prefix, field.base_type)
-                yield '    %s.assign(%s(_alloc));\n'%(field.name, cpp_msg_with_alloc)
+                yield '    %s.assign(%s(_alloc));\n' % (field.name, cpp_msg_with_alloc)
         elif (len(val) > 0):
-            yield '    %s.assign(%s);\n'%(field.name, val)
+            yield '    %s.assign(%s);\n' % (field.name, val)
 
-#used
+
+# used
 def generate_initializer_list(spec, container_gets_allocator):
     """
-    Writes the initializer list for a constructor
+    Write the initializer list for a constructor.
 
     @param s: The stream to write to
     @type s: stream
@@ -238,19 +260,18 @@ def generate_initializer_list(spec, container_gets_allocator):
         should have the allocator passed to its constructor.  Assumes the allocator is named _alloc.
     @type container_gets_allocator: bool
     """
-
     op = ':'
     for field in spec.parsed_fields():
         val = default_value(field.base_type)
         use_alloc = takes_allocator(field.base_type)
         if (field.is_array):
             if (field.array_len is None and container_gets_allocator):
-                yield '  %s %s(_alloc)'%(op, field.name)
+                yield '  %s %s(_alloc)' % (op, field.name)
             else:
-                yield '  %s %s()'%(op, field.name)
+                yield '  %s %s()' % (op, field.name)
         else:
             if (container_gets_allocator and use_alloc):
-                yield '  %s %s(_alloc)'%(op, field.name)
+                yield '  %s %s(_alloc)' % (op, field.name)
             else:
-                yield '  %s %s(%s)'%(op, field.name, val)
+                yield '  %s %s(%s)' % (op, field.name, val)
         op = ','
