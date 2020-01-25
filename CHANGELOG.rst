@@ -2,8 +2,8 @@
 Changelog for package gencpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.6.3 (2020-01-24)
+------------------
 * various code cleanup (`#46 <https://github.com/ros/gencpp/issues/46>`_)
 * package.xml format 3 (`#45 <https://github.com/ros/gencpp/issues/45>`_)
 * use setuptools instead of distutils (`#43 <https://github.com/ros/gencpp/issues/43>`_)
