@@ -2,6 +2,14 @@
 Changelog for package gencpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* various code cleanup (`#46 <https://github.com/ros/gencpp/issues/46>`_)
+* package.xml format 3 (`#45 <https://github.com/ros/gencpp/issues/45>`_)
+* use setuptools instead of distutils (`#43 <https://github.com/ros/gencpp/issues/43>`_)
+* bump CMake version to avoid CMP0048 warning (`#44 <https://github.com/ros/gencpp/issues/44>`_)
+* two patches to make the generated headers reproducible (`#42 <https://github.com/ros/gencpp/issues/42>`_)
+
 0.6.2 (2019-03-18)
 ------------------
 * add plugins the ability to also generate free functions (`#40 <https://github.com/ros/gencpp/issues/40>`_)
