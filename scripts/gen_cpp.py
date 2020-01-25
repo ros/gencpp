@@ -32,19 +32,19 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-## ROS message source code generation for C++
-##
-## Converts ROS .msg files in a package into C++ source code implementations.
+"""
+ROS message source code generation for C++.
+
+Converts ROS .msg files in a package into C++ source code implementations.
+"""
 
 import sys
-import os
+
 import genmsg.template_tools
 
-msg_template_map = { 'msg.h.template':'@NAME@.h' }
-srv_template_map = { 'srv.h.template':'@NAME@.h' }
+msg_template_map = {'msg.h.template': '@NAME@.h'}
+srv_template_map = {'srv.h.template': '@NAME@.h'}
 
-if __name__ == "__main__":
-    genmsg.template_tools.generate_from_command_line_options(sys.argv,
-                                                             msg_template_map,
-                                                             srv_template_map)
-
+if __name__ == '__main__':
+    genmsg.template_tools.generate_from_command_line_options(
+        sys.argv, msg_template_map, srv_template_map)
