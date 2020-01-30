@@ -114,6 +114,13 @@ for constant in spec.constants:
 
 @# Integer constants
 @[if len(constants_integer) > 0]@
+// reducing the odds to have name collisions with Windows.h 
+@[for constant in constants_integer]@
+#if defined(_WIN32) && defined(@(constant.name))
+    #undef @(constant.name)
+#endif
+
+@[end for]@
   enum {
 @[for constant in constants_integer]@
 @[if (constant.type in ['byte', 'int8', 'int16', 'int32', 'int64', 'char'])]@
