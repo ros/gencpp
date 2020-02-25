@@ -112,6 +112,15 @@ for constant in spec.constants:
     constants_non_integer.append(constant)
 }@
 
+@[if len(spec.constants) > 0]@
+// reducing the odds to have name collisions with Windows.h 
+@[for constant in spec.constants]@
+#if defined(_WIN32) && defined(@(constant.name))
+  #undef @(constant.name)
+#endif
+@[end for]@
+
+@[end if]@
 @# Integer constants
 @[if len(constants_integer) > 0]@
   enum {
