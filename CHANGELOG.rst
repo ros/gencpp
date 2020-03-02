@@ -2,6 +2,10 @@
 Changelog for package gencpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [windows] reducing the odds to have name collisions (`#47 <https://github.com/ros/gencpp/issues/47>`_)
+
 0.6.3 (2020-01-24)
 ------------------
 * various code cleanup (`#46 <https://github.com/ros/gencpp/issues/46>`_)
