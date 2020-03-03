@@ -25,6 +25,8 @@ cpp_namespace = '::%s::'%(spec.package) # TODO handle nested namespace
 cpp_class = '%s_'%spec.short_name
 cpp_full_name = '%s%s'%(cpp_namespace,cpp_class)
 cpp_full_name_with_alloc = '%s<ContainerAllocator>'%(cpp_full_name)
+cpp_full_name_with_comp_alloc1 = '%s<ContainerAllocator1>'%(cpp_full_name)
+cpp_full_name_with_comp_alloc2 = '%s<ContainerAllocator2>'%(cpp_full_name)
 cpp_msg_definition = gencpp.escape_message_definition(msg_definition)
 has_plugin = os.path.exists('include/%s/plugin/%s.h' % (spec.package, spec.short_name))
 has_plugin_after = os.path.exists('include/%s/plugin/%s.after.h' % (spec.package, spec.short_name))
@@ -183,6 +185,30 @@ ros::message_operations::Printer< @(cpp_full_name_with_alloc) >::stream(s, "", v
 return s;
 }
 
+@[if len(spec.parsed_fields()) > 0]
+@# Equality
+template<typename ContainerAllocator1, typename ContainerAllocator2>
+bool operator==(const @(cpp_full_name_with_comp_alloc1) & lhs, const @(cpp_full_name_with_comp_alloc2) & rhs)
+{
+  return @
+@[for i, field in enumerate(spec.parsed_fields())]@
+@[if i != 0]@
+ &&
+    @
+@[end if]@
+lhs.@(field.name) == rhs.@(field.name)@
+@[end for]@
+;
+}
+
+@# Inequality
+template<typename ContainerAllocator1, typename ContainerAllocator2>
+bool operator!=(const @(cpp_full_name_with_comp_alloc1) & lhs, const @(cpp_full_name_with_comp_alloc2) & rhs)
+{
+  return !(lhs == rhs);
+}
+
+@[end if]
 @# End of namespace
 } // namespace @(spec.package)
 
