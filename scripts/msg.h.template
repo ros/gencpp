@@ -175,23 +175,30 @@ ros::message_operations::Printer< @(cpp_full_name_with_alloc) >::stream(s, "", v
 return s;
 }
 
-
 @[if len(spec.parsed_fields()) > 0]
 @# Equality
 template<typename ContainerAllocator1, typename ContainerAllocator2>
 bool operator==(const @(cpp_full_name_with_comp_alloc1) & lhs, const @(cpp_full_name_with_comp_alloc2) & rhs)
 {
-return @[for field in spec.parsed_fields()]@ lhs.@(field.name) == rhs.@(field.name) @[if field is not spec.parsed_fields()[-1]]@ && @[end if]@ @[end for] ;
+  return @
+@[for i, field in enumerate(spec.parsed_fields())]@
+@[if i != 0]@
+ &&
+    @
+@[end if]@
+lhs.@(field.name) == rhs.@(field.name)@
+@[end for]@
+;
 }
 
 @# Inequality
 template<typename ContainerAllocator1, typename ContainerAllocator2>
 bool operator!=(const @(cpp_full_name_with_comp_alloc1) & lhs, const @(cpp_full_name_with_comp_alloc2) & rhs)
 {
-return !(lhs == rhs);
+  return !(lhs == rhs);
 }
-@[end if]
 
+@[end if]
 @# End of namespace
 } // namespace @(spec.package)
 
