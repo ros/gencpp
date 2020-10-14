@@ -21,7 +21,7 @@ import genmsg.msgs
 import gencpp
 import os
 
-cpp_namespace = '::%s::'%(spec.package) # TODO handle nested namespace
+cpp_namespace = '::%s::'%(spec.name_space) # TODO handle nested namespace
 cpp_class = '%s_'%spec.short_name
 cpp_full_name = '%s%s'%(cpp_namespace,cpp_class)
 cpp_full_name_with_alloc = '%s<ContainerAllocator>'%(cpp_full_name)
@@ -67,7 +67,7 @@ for field in spec.parsed_fields():
 #include <@(spec.package)/plugin/@(spec.short_name).h>
 @[end if]@
 
-namespace @(spec.package)
+namespace @(spec.name_space)
 {
 template <class ContainerAllocator>
 struct @(spec.short_name)_
@@ -89,7 +89,7 @@ struct @(spec.short_name)_
 @[if alloc_name != '' and not [f for f in spec.parsed_fields() if f.is_array and f.array_len is not None and f.base_type == 'string']]@
   (void)_alloc;
 @[end if]@
-  @('\n  '.join(gencpp.generate_fixed_length_assigns(spec, alloc_name != '', '%s::'%(spec.package))))@
+  @('\n  '.join(gencpp.generate_fixed_length_assigns(spec, alloc_name != '', '%s::'%(spec.package), msg_context)))@
   }
 @[end for]
 @[if has_plugin]@
@@ -97,7 +97,13 @@ struct @(spec.short_name)_
 @[end if]@
 
 @[for field in spec.parsed_fields()]
- @{cpp_type = gencpp.msg_type_to_cpp(field.type)}@
+@{
+name_space = ''
+if msg_context.is_registered(field.base_type):
+  name_space = msg_context.get_registered(field.base_type).name_space
+  
+cpp_type = gencpp.msg_type_to_cpp(field.type, name_space)
+}@
   typedef @(cpp_type) _@(field.name)_type;
   _@(field.name)_type @(field.name);
 @[end for]
@@ -137,7 +143,7 @@ for constant in spec.constants:
 
 @# Non-integer constants
 @[for constant in constants_non_integer]@
-  static const @(gencpp.msg_type_to_cpp(constant.type)) @(constant.name);
+  static const @(gencpp.msg_type_to_cpp(constant.type, '')) @(constant.name);
 @[end for]@
 
 @# Shared pointer typedefs
@@ -162,7 +168,7 @@ typedef boost::shared_ptr< @(cpp_namespace+spec.short_name) const> @(spec.short_
 // constants requiring out of line definition
 @[for c in spec.constants]
    @[if c.type not in ['byte', 'int8', 'int16', 'int32', 'int64', 'char', 'uint8', 'uint16', 'uint32', 'uint64']]
-   template<typename ContainerAllocator> const @(gencpp.msg_type_to_cpp(c.type))
+   template<typename ContainerAllocator> const @(gencpp.msg_type_to_cpp(c.type, ''))
       @(spec.short_name)_<ContainerAllocator>::@(c.name) =
         @[if c.type == 'string']
           "@(gencpp.escape_string(c.val))"
@@ -327,7 +333,10 @@ struct Printer< @(cpp_full_name_with_alloc) >
 @# todo, change this stuff below into proper EmPy syntax
 @{
 for field in spec.parsed_fields():
-  cpp_type = gencpp.msg_type_to_cpp(field.base_type)
+  name_space = ''
+  if msg_context.is_registered(field.base_type):
+    name_space = msg_context.get_registered(field.base_type).name_space
+  cpp_type = gencpp.msg_type_to_cpp(field.base_type, name_space)
   if (field.is_array):
     print('    s << indent << "%s[]" << std::endl;'%(field.name))
     print('    for (size_t i = 0; i < v.%s.size(); ++i)'%(field.name))
