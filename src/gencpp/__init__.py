@@ -51,7 +51,7 @@ MSG_TYPE_TO_CPP = {
     'int64': 'int64_t',
     'float32': 'float',
     'float64': 'double',
-    'string': 'std::basic_string<char, std::char_traits<char>, typename ContainerAllocator::template rebind<char>::other > ',
+    'string': 'std::basic_string<char, std::char_traits<char>, typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<char>>',
     'time': 'ros::Time',
     'duration': 'ros::Duration',
 }
@@ -86,7 +86,7 @@ def msg_type_to_cpp(type_):
 
     if (is_array):
         if (array_len is None):
-            return 'std::vector<%s, typename ContainerAllocator::template rebind<%s>::other > ' % (cpp_type, cpp_type)
+            return 'std::vector<%s, typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<%s>>' % (cpp_type, cpp_type)
         else:
             return 'boost::array<%s, %s> ' % (cpp_type, array_len)
     else:

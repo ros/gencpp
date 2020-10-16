@@ -41,6 +41,7 @@ has_plugin_after = os.path.exists('include/%s/plugin/%s.after.h' % (spec.package
 
 #include <string>
 #include <vector>
+#include <memory>
 
 #include <ros/types.h>
 #include <ros/serialization.h>
