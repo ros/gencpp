@@ -298,6 +298,42 @@ namespace serialization
 @[end if]@
 
     ROS_DECLARE_ALLINONE_SERIALIZER
+
+#if __cplusplus >= 201703L
+    static constexpr std::size_t element_size = @(len(spec.parsed_fields()));
+    template <std::size_t I, typename T>
+    static auto& getField(T& m)
+    {
+@[for i, field in enumerate(spec.parsed_fields())]@
+      if constexpr (I == @(i))
+      {
+        return m.@(field.name);
+      }
+@[end for]@
+
+      if constexpr (I >= element_size)
+      {
+        static_assert(I < element_size, "Field does not exist in the message.");
+      }
+    }
+
+    template <std::size_t I>
+    static constexpr const auto& getFieldName()
+    {
+@[for i, field in enumerate(spec.parsed_fields())]@
+      if constexpr (I == @(i))
+      {
+        return "@(field.name)";
+      }
+@[end for]@
+      if constexpr (I >= element_size)
+      {
+        static_assert(I < element_size, "Field does not exist in the message.");
+        return "";  // We will never reach this statement.
+      }
+    }
+#endif
+
   }; // struct @(cpp_class)
 @[if has_plugin]@
 #endif
