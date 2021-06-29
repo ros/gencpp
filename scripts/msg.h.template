@@ -122,6 +122,50 @@ for constant in spec.constants:
 @[end for]@
 
 @[end if]@
+
+@# SRS_ENUM_WITH_TOSTRING
+@{
+enum_keyword = "SRS_ENUM_WITH_TOSTRING"
+tostring_enums_text = {}
+enum_started = False
+for line in spec.text.splitlines():
+  if "END "+enum_keyword in line:
+    enum_started = False
+    tostring_enums_text[enum_name] = enum_value_lines
+    continue
+  if enum_keyword in line:
+    enum_name = line.split(enum_keyword)[1].strip()
+    enum_value_lines = []
+    enum_started = True
+    continue
+  if enum_started:
+    enum_value_lines.append(line)      
+tostring_enums = {}
+for name, enum_value_lines in tostring_enums_text.items():
+  constants_this_enum = []
+  for i, constant in enumerate(list(constants_integer)):
+    for enum_value_line in enum_value_lines:
+      comment_start = enum_value_line.find('#')
+      constant_name_start = enum_value_line.find(constant.name)
+      if constant_name_start >= 0 and (comment_start < 0 or constant_name_start < comment_start):
+        constants_this_enum.append(constant)
+        constants_integer.remove(constant)
+  tostring_enums[name] = constants_this_enum
+}@   
+@[for name, enum_values in tostring_enums.items()]@
+@[if len(enum_values) > 0]@
+  enum @(name) {
+@[for constant in enum_values]@
+@[if (constant.type in ['byte', 'int8', 'int16', 'int32', 'int64', 'char'])]@
+    @(constant.name) = @(int(constant.val)),
+@[elif (constant.type in ['uint8', 'uint16', 'uint32', 'uint64'])]@
+    @(constant.name) = @(int(constant.val))u,
+@[end if]@
+@[end for]@
+  };
+@[end if]@
+@[end for]@
+
 @# Integer constants
 @[if len(constants_integer) > 0]@
   enum {
@@ -210,6 +254,49 @@ bool operator!=(const @(cpp_full_name_with_comp_alloc1) & lhs, const @(cpp_full_
 @[end if]
 @# End of namespace
 } // namespace @(spec.package)
+
+namespace srs
+{
+@[for name, enum_values in tostring_enums.items()]@
+@[if len(enum_values) > 0]@
+inline const char* toString(@(spec.package)::@(spec.short_name)::@(name) value)
+{
+  switch(value)
+  {
+@[for constant in enum_values]@
+    case @(spec.package)::@(spec.short_name)::@(name)::@(constant.name) : return "@(constant.name)";
+@[end for]@
+    default: return "[Unknown enum value]";   
+  }
+}
+@[end if]@
+@[end for]@
+
+@[for name, enum_values in tostring_enums.items()]@
+@[if len(enum_values) > 0]@
+inline void fromString(const std::string& value, @(spec.package)::@(spec.short_name)::@(name)& out)
+{
+  try
+  {
+    if(value == "@(enum_values[0].name)")
+      out = @(spec.package)::@(spec.short_name)::@(name)::@(enum_values[0].name);
+@[for constant in enum_values[1:]]@
+    else if(value == "@(constant.name)")
+      out = @(spec.package)::@(spec.short_name)::@(name)::@(constant.name);
+@[end for]@
+    else
+      throw std::out_of_range("FATAL:" + value + " is not a valid value for enum of type @(spec.package)::@(spec.short_name)::@(name)\n");
+  }
+  catch(const std::exception& exc)
+  {
+    std::cerr << exc.what();
+    exit(EXIT_FAILURE);
+  }
+}
+@[end if]@
+@[end for]@
+
+}  // namespace srs
 
 @# Message Traits
 namespace ros
