@@ -58,7 +58,7 @@ MSG_TYPE_TO_CPP = {
 
 
 # used
-def msg_type_to_cpp(type_):
+def msg_type_to_cpp(type_, name_space_):
     """
     Convert a message type into the C++ declaration for that type.
 
@@ -82,7 +82,7 @@ def msg_type_to_cpp(type_):
     else:
         pkg = base_type.split('/')[0]
         msg = base_type.split('/')[1]
-        cpp_type = ' ::%s::%s_<ContainerAllocator> ' % (pkg, msg)
+        cpp_type = ' ::%s::%s_<ContainerAllocator> ' % (name_space_, msg)
 
     if (is_array):
         if (array_len is None):
@@ -116,7 +116,7 @@ def escape_message_definition(definition):
 
 
 # used2
-def cpp_message_declarations(name_prefix, msg):
+def cpp_message_declarations(name_prefix, msg, name_space):
     """
     Return the different possible C++ declarations for a message given the message itself.
 
@@ -132,6 +132,8 @@ def cpp_message_declarations(name_prefix, msg):
     cpp_name = ' ::%s%s' % (name_prefix, msg)
     if (pkg):
         cpp_name = ' ::%s::%s' % (pkg, basetype)
+    if (name_space) != '':
+        cpp_name = ' ::%s::%s' % (name_space, basetype)
     return ('%s_' % (cpp_name), '%s_<ContainerAllocator> ' % (cpp_name), '%s' % (cpp_name))
 
 
@@ -215,7 +217,7 @@ def escape_string(str_):
 
 
 # used
-def generate_fixed_length_assigns(spec, container_gets_allocator, cpp_name_prefix):
+def generate_fixed_length_assigns(spec, container_gets_allocator, cpp_name_prefix, msg_context):
     """
     Initialize any fixed-length arrays.
 
@@ -241,7 +243,10 @@ def generate_fixed_length_assigns(spec, container_gets_allocator, cpp_name_prefi
                 string_cpp = msg_type_to_cpp('string')
                 yield '    %s.assign(%s(_alloc));\n' % (field.name, string_cpp)
             else:
-                (cpp_msg_unqualified, cpp_msg_with_alloc, _) = cpp_message_declarations(cpp_name_prefix, field.base_type)
+                name_space = ''
+                if msg_context.is_registered(field.base_type):
+                  name_space = msg_context.get_registered(field.base_type).name_space
+                (cpp_msg_unqualified, cpp_msg_with_alloc, _) = cpp_message_declarations(cpp_name_prefix, field.base_type, name_space)
                 yield '    %s.assign(%s(_alloc));\n' % (field.name, cpp_msg_with_alloc)
         elif (len(val) > 0):
             yield '    %s.assign(%s);\n' % (field.name, val)
