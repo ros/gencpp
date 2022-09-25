@@ -2,8 +2,8 @@
 Changelog for package gencpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.6.6 (2022-09-25)
+------------------
 * Fix usage of deprecated std::allocator::rebind (`#51 <https://github.com/ros/gencpp/issues/51>`_)
 * Remove unnecessary map include (`#48 <https://github.com/ros/gencpp/issues/48>`_)
 * Contributors: Markus Vieth, poggenhans
