@@ -2,6 +2,12 @@
 Changelog for package gencpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix usage of deprecated std::allocator::rebind (`#51 <https://github.com/ros/gencpp/issues/51>`_)
+* Remove unnecessary map include (`#48 <https://github.com/ros/gencpp/issues/48>`_)
+* Contributors: Markus Vieth, poggenhans
+
 0.6.5 (2020-03-03)
 ------------------
 * add operator== & operator!= to message generation (`#41 <https://github.com/ros/gencpp/issues/41>`_)
