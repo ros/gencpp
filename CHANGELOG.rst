@@ -2,6 +2,11 @@
 Changelog for package gencpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix msg printer for arrays (`#58 <https://github.com/ros/gencpp/issues/58>`_)
+* Contributors: Robert Haschke
+
 0.7.1 (2025-04-10)
 ------------------
 * Fix usage of deprecated std::allocator::rebind (`#51 <https://github.com/ros/gencpp/issues/51>`_)
