@@ -327,26 +327,28 @@ struct Printer< @(cpp_full_name_with_alloc) >
   {
 @# todo, change this stuff below into proper EmPy syntax
 @{
-for field in spec.parsed_fields():
+for i, field in enumerate(spec.parsed_fields()):
   cpp_type = gencpp.msg_type_to_cpp(field.base_type)
+  inline = 'true' if field.is_builtin else 'false'
+  # Print new line for every field except first top-level one
+  print('    if (%s || !indent.empty())'%('true' if i > 0 else 'false'))
+  print('      s << std::endl;')
+  print('    s << indent << "%s: ";'%(field.name))
   if (field.is_array):
-    print('    s << indent << "%s[]" << std::endl;'%(field.name))
+    print('    if (v.%s.empty() || %s)'%(field.name, inline))
+    print('      s << "[";')
     print('    for (size_t i = 0; i < v.%s.size(); ++i)'%(field.name))
     print('    {')
-    print('      s << indent << "  %s[" << i << "]: ";'%(field.name))
-    indent_increment = '  '
-    if (not field.is_builtin):
-      print('      s << std::endl;')
-      print('      s << indent;')
-      indent_increment = '    ';
-    print('      Printer<%s>::stream(s, indent + "%s", v.%s[i]);'%(cpp_type, indent_increment, field.name))
+    print('      if (%s && i > 0)'%(inline))
+    print('        s << ", ";')
+    print('      else if (!%s)'%(inline))
+    print('        s << std::endl << indent << "  -";')
+    print('      Printer<%s>::stream(s, %s ? std::string() : indent + "    ", v.%s[i]);'%(cpp_type, inline, field.name))
     print('    }')
+    print('    if (v.%s.empty() || %s)'%(field.name, inline))
+    print('      s << "]";')
   else:
-    print('    s << indent << "%s: ";'%(field.name))
-    indent_increment = '  '
-    if (not field.is_builtin or field.is_array):
-      print('    s << std::endl;')
-    print('    Printer<%s>::stream(s, indent + "%s", v.%s);'%(cpp_type, indent_increment, field.name))
+    print('    Printer<%s>::stream(s, indent + "  ", v.%s);'%(cpp_type, field.name))
 }@
   }
 @[else]@
