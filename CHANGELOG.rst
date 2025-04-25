@@ -2,8 +2,8 @@
 Changelog for package gencpp
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.7.2 (2025-04-25)
+------------------
 * Fix msg printer for arrays (`#58 <https://github.com/ros/gencpp/issues/58>`_)
 * Contributors: Robert Haschke
 
